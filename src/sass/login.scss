@@ -1,0 +1,74 @@
+.login{
+	background: rgb(103,85,193);
+	background: linear-gradient(49deg, rgba(103,85,193,1) 0%, rgba(207,92,185,1) 73%, rgba(230,180,145,1) 100%);
+    
+    border-radius: 12px;
+    padding: 10px 0px 0px 0px;
+    margin-top: 20px;
+	/*min-width:350px; */
+}
+.login .form-text{color:white;}
+.login .fa{color:black;}
+.login h1{color:white;}
+.login-title{font-size:18px;text-shadow: 1px 1px 7px #5d5c5c, 0px 0px 7px #c6c6c6;}
+
+.login-btn-grad {background-image: linear-gradient(to right, #314755 0%, #26a0da  51%, #314755  100%)}
+ .login-btn-grad {
+	margin: 10px;
+	padding: 10px 45px;
+	text-align: center;
+	text-transform: uppercase;
+	transition: 0.5s;
+	background-size: 200% auto;
+	color: white;            
+	border-radius: 10px;
+	border:0px solid;
+  }
+
+  .login-btn-grad:hover {
+	background-position: right center; /* change the direction of the change here */
+	color: #fff;
+	text-decoration: none;
+  }
+  .animate{
+	transition:1s ease-in-out;
+}
+.progressbar{
+	height:14px;
+	background-color:#8658bf;
+	border-radius:5px;
+	box-shadow:0px 0px 10px white;
+	padding:2px;
+}
+.scroller{
+	height:10px;
+	background-color: #be5bbb;
+	width:100px;
+	border-radius:5px;
+	box-shadow:0px 0px 10px yellow;
+	animation: slider 1s linear infinite;
+}
+.full_width{
+	width:100%;
+}
+@keyframes slider {
+	0% {
+		margin-left: 0px;
+		background-color:red;
+	}
+	50%{
+		margin-left:215px;
+		background-color:green;
+	}
+	100% {
+		margin-left:0px;
+		background-color:red;
+	}
+}
+.error-message{
+	text-align:center;padding-top:20px;border-radius:10px;border:2px solid rgb(240, 160, 160);margin:0px auto;margin-top:5%;background-color: red;height:70px;
+}
+.error-message2{
+	text-align:center;padding-top:20px;border-radius:10px;border:2px solid rgb(240, 160, 160);margin:0px auto;margin-top:5%;background-color: red;height:40px;
+}.success{background-color:green;color:white;}
+.danger{background-color:red;color:white;}
