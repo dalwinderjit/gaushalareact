@@ -1,0 +1,102 @@
+@import 'variables';
+
+/*Select Component desing*/
+
+
+.react-select__menu{
+    display: flex;
+    background-color: $sidebar-primary-color;
+    flex-direction: column;
+    max-height:200px;
+    overflow-y: auto;
+}
+.react-select__menu-list{
+    display: flex;
+    background-color: $sidebar-secondary-color;
+    flex-direction: column;
+    color:white;
+}
+
+.react-select__option{
+    display: flex;
+    background-color: $sidebar-primary-color;
+    height:40px;
+    padding:4px 10px;
+    width:100px;
+    color:white;
+}
+.react-select__option:hover,.react-select__option--is-focused{
+    background-color: $sidebar-secondary-color;
+}
+
+.react-select__multi-value { 
+    background-color: $sidebar-secondary-color;
+    border:1px solid white;
+    border-radius: 3px;;
+    
+    margin:2px;
+}
+.react-select__multi-value__label{
+    color:white;
+    padding:2px;
+}
+
+
+.react-select__clearIndicator{}
+.react-select__container{}
+.react-select__control{
+    border:1px solid $input-border-color;
+    height:40px;
+}
+
+.react-select__multi-value__remove{
+    border-left:1px solid white;
+    padding:2px 5px;
+    cursor: pointer;
+    color:white;
+}
+.react-select__placeholder{
+    color: gray;
+    padding:6px 0px 0px 20px;
+    height:40px;
+}
+.react-select__indicator{
+    color: gray;
+    padding:0px 5px 0px 5px;
+    height:40px;
+    position: relative;
+    top:-3px;
+}
+.react-select__indicator-separator{
+    background-color: $input-border-color;
+    height:40px;
+}
+.react-select__single-value{
+    border-left:1px solid white;
+    padding:4px 5px;
+    cursor: pointer;
+    color:white;
+}
+/*
+clearIndicator
+container
+control
+dropdownIndicator
+group
+groupHeading
+indicatorsContainer
+indicatorSeparator
+input
+loadingIndicator
+loadingMessage
+menu
+menuList
+menuPortal
+multiValue
+multiValueLabel
+multiValueRemove
+noOptionsMessage
+option
+placeholder
+singleValue
+valueContainer*/
