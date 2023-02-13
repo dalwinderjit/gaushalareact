@@ -23,10 +23,10 @@ export default class HeiferProfile extends Component {
   }
   loadHeiferWholeData = async (id) => {
     await this.heiferEditForm.getDataByHeiferId(id);
-    this.heiferCalvingDetail.table.loadData();
-    this.heiferServiceDetail.table.loadData();
-    this.milkingChart.table.loadData();
-    this.milkingChart.tableMilkStartStopDetail.loadData();
+    //this.heiferCalvingDetail.table.loadData();
+    //this.heiferServiceDetail.table.loadData();
+    //this.milkingChart.table.loadData();
+    //this.milkingChart.tableMilkStartStopDetail.loadData();
     this.medicationDetail.table.loadData();
     this.sellHeiferModal.resetSellForm();
     this.sellHeiferModal.updateSelectedHeifer();

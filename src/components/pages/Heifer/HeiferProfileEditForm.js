@@ -218,7 +218,12 @@ export default class HeiferProfileEditForm extends Component {
   async getDataByHeiferId(id) {
     //this.templateManager.showLoading("Loading Heifer Data");
     $('#search-result-list').css('display', 'none');
-    let data = await fetch(`${apiUrl}Heifers/GetHeiferById/` + id)
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      //body: JSON.stringify({ tagNo: tag_no,pageNo:1 })
+  };
+    let data = await fetch(`${apiUrl}Heifers/GetHeiferById?id=` + id,requestOptions)
       .then(res => res.json())
       .then(
         (result) => {
@@ -231,13 +236,12 @@ export default class HeiferProfileEditForm extends Component {
           return error
         }
       )
-    if (data.success === true) {
+      console.log(data);
+    if (data.status === true) {
       this.context.heiferID = data.data.id;
       this.context.selectedHeifer.id = data.data.id;
       this.context.selectedHeifer.name = data.data.name;
       this.context.selectedHeifer.tagNo = data.data.tagNo;
-      this.context.addHeiferServiceModal.updateSelectedHeifer();
-      this.context.addHeiferMilkingStartStopDetail.updateSelectedHeifer();
       this.props.heiferProfile.medicationDetail.updateSelectedHeifer();
       data = await this.formatHeiferData(data);
       await this.setState(prevState => {
@@ -396,7 +400,7 @@ export default class HeiferProfileEditForm extends Component {
                       </tr>
                       <tr><td>Weight</td><td><input type="text" className="cpinput-disabled" value={values.weight} onChange={handleChange} onBlur={handleBlur} disabled id="heifer_edit_heifer_weight" name="weight" />{this.error(errors.weight, errors.touched)}</td></tr>
                       <tr><td>Height</td><td><input type="text" className="cpinput-disabled" disabled id="heifer_edit_heifer_height" name="height" value={values.height} onChange={handleChange} onBlur={handleBlur} />{this.error(errors.height, errors.touched)}</td></tr>
-                      <tr><td>Fat</td><td><input type="text" className="cpinput-disabled" value={values.butterFat} disabled id="heifer_edit_heifer_butter_fat" name="butterFat" onChange={handleChange} onBlur={handleBlur} />{this.error(errors.butterFat, errors.touched)}</td></tr>
+                      
                       <tr><td>Heifer Sold</td><td>{values.sold===false?<button type="button" onClick={this.showSellHeiferModal} className="btn btn-success btn-sm">Sell Heifer</button>:<button type="button" onClick={this.getSellHeiferDetail} className="btn btn-success btn-sm">Edit Sell Heifer</button>} <input type="checkbox" checked={values.sold}/></td></tr>
                       <tr><td>Heifer Location</td>
                         <td>

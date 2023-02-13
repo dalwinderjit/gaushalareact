@@ -14,7 +14,7 @@ export default class Search extends Component {
             headers: { 'Content-Type': 'application/json' },
             //body: JSON.stringify({ tagNo: tag_no,pageNo:1 })
         };
-        let data = await fetch(`${apiUrl}${this.props.searchApi}?tagNo=${tag_no}&pageNo=1`,requestOptions)
+        let data = await fetch(`${apiUrl}${this.props.searchApi}?tagNo=${tag_no}&pageNo=1&recordsPerPage=20`,requestOptions)
           .then(res => res.json())
           .then(
             (result) => {

@@ -1,9 +1,12 @@
 import { Component, createContext } from "react";
+import { apiUrl } from "./AppContext";
 
 const HeiferContext = createContext();
 export class HeiferProvider extends Component {
   constructor(props) {
     super(props);
+    
+    
     this.state = {
       heiferID: "",
       tagNo: "SW-719",
@@ -48,14 +51,14 @@ export class HeiferProvider extends Component {
         heiferDataSet: false,
       },
       breeds: {
-        1: "Sahiwal",
+        1: "Sahiwal sdfsdf",
         2: "Gir",
         3: "Thar Parkar",
         4: "Kapila",
         5: "Kankrej",
       },
       colors: {
-        1: "Brown",
+        1: "Brown d d",
         2: "White",
         3: "Black",
         4: "Black+White",
@@ -72,7 +75,7 @@ export class HeiferProvider extends Component {
       delivery_status: { 1: "Normal", 2: "Abnormal", 3: "Child Died" },
       gender:{'Male':'Male','Female':'Female'},
       locations:{
-        1:"Shed A",
+        1:"Shed A dfsdf",
         2:"Shed B",
         3:"Shed C",
         4:"Shed D",
@@ -114,6 +117,7 @@ export class HeiferProvider extends Component {
       },
       interCalvPeriod: {},
     };
+    this.setHeifersPageData();
     this.convertDateTo1 = (date) => {
       if (date !== "") {
         var a = date.split("/");
@@ -150,6 +154,31 @@ export class HeiferProvider extends Component {
         {this.props.children}
       </HeiferContext.Provider>
     );
+  }
+  getHeiferPageData=async ()=>{
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      //body: JSON.stringify({ tagNo: tag_no,pageNo:1 })
+    };
+    let data = await fetch(`${apiUrl}Heifers/GetDataForHeifersProfilePage`,requestOptions)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          //console.log('result retrieved')
+          return result
+        },
+        (error) => {
+          //console.log("error");
+          //console.log(error);
+          return error
+        }
+      )
+      return data;
+  }
+  setHeifersPageData= async() =>{
+    let page_data = await this.getHeiferPageData();
+    this.setState({breeds:page_data.breeds,colors:page_data.colors,location:page_data.animalLocations});
   }
 }
 
