@@ -16,7 +16,8 @@ export default class CowMedicationDetail extends Component {
     this.state = {
       taskType: "Add",
       doctorMultipleSelection: true,
-      data:[]
+      data:[],
+      diseaseOptions:[]
     };
     this.propnosis_options = [
       { value: 1, label: "Poor" },
@@ -37,7 +38,14 @@ export default class CowMedicationDetail extends Component {
         .required("Please Enter Date"),
       AnimalID: yup.number().required("Please Select the Cow"),
       //AnimalNo:yup.number().required("Please Select the Cow"),,
-      Disease: yup.string().required("Please Enter the Disease"),
+      //Disease: yup.string().required("Please Enter the Disease"),
+      DiseaseID:  yup
+      .object()
+      .shape({
+        label: yup.string(),
+        value: yup.number().required("Plsease select the Disease"),
+      })
+      .required("Please select Disease"),
       Symptoms: yup.string().required("Please Enter the Symptoms"),
       Diagnosis: yup.string().required("Please Enter the Diagnosis"),
       Treatment: yup.string().required("Please Enter the Treatment"),
@@ -71,6 +79,7 @@ export default class CowMedicationDetail extends Component {
         AnimalNo: '',
         AnimalName: '',
         Disease: "",
+        DiseaseID: "",
         Symptoms: "",
         Diagnosis: "",
         Treatment: "",
@@ -99,7 +108,8 @@ export default class CowMedicationDetail extends Component {
           Id:formValues.Id,
           Date: convertDate(formValues.Date),
           AnimalID: this.context.selectedCow.id,
-          Disease: formValues.Disease,
+          //Disease: formValues.Disease,
+          DiseaseID: formValues.DiseaseID.value,
           Symptoms: formValues.Symptoms,
           Diagnosis: formValues.Diagnosis,
           Treatment: formValues.Treatment,
@@ -232,6 +242,7 @@ export default class CowMedicationDetail extends Component {
                               component={TextError}
                             />
                           </div>
+                          {/*
                           <div className="input-group mb-3">
                             <label
                               className="input-group-text kg-label"
@@ -247,6 +258,34 @@ export default class CowMedicationDetail extends Component {
                             <br />
                             <ErrorMessage
                               name="Disease"
+                              component={TextError}
+                            />
+                          </div>
+                            */}
+                          <div className="input-group mb-3">
+                            <label
+                              className="input-group-text kg-label"
+                              htmlFor="medication_disease_id"
+                            >
+                              Select Disease
+                            </label>
+                            <Select
+                              id="medication_disease_id"
+                              name="DiseaseID"
+                              autoSize={true}
+                              className="form-control"
+                              value={values.DiseaseID}
+                              options={this.state.diseaseOptions}
+                              onChange={(value)=>{console.log(value);setFieldValue('DiseaseID',value);}}
+                              onInputChange={(value) => {
+                                if (value != "") {
+                                  this.loadDiseases(value);
+                                }
+                              }}
+                            />
+                            <br />
+                            <ErrorMessage
+                              name="DiseaseID"
                               component={TextError}
                             />
                           </div>
@@ -648,4 +687,36 @@ export default class CowMedicationDetail extends Component {
     }
     return data;
   }  
+  loadDiseases=async (inputValue) => {
+    let data = new FormData();
+    data.append("DiseaseName", inputValue);
+    data.append("PageNo", 1);
+    data.append("RecordsPerPage", 10);
+    const requestOptions = {
+      method: "POST",
+      body: data,
+    };
+    let response = await fetch(
+      `${apiUrl}Disease/GetDiseaseIdNamePairByDiseaseName`,
+      requestOptions
+    )
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          return result;
+        },
+        (error) => {
+          return error;
+        }
+      );
+    var data_ = Object.entries(response);
+    let new_data = [];
+    for (let i = 0; i < data_.length; i++) {
+      new_data.push({
+        value: data_[i][0],
+        label: data_[i][1],
+      });
+    }
+    this.setState({ diseaseOptions: new_data });
+  }
 }
