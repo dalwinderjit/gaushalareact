@@ -8,6 +8,7 @@ import { convertDate, apiUrl } from "../../../context/AppContext";
 import CowContext from "../../../context/CowContext";
 import $ from "jquery";
 import Table from "../../Table";
+import FormField from "../Templates/FormField";
 
 export default class CowMedicationDetail extends Component {
   static contextType = CowContext;
@@ -203,247 +204,29 @@ export default class CowMedicationDetail extends Component {
                     <>
                       <Form id="medication-form" onSubmit={handleSubmit}>
                         <div>
-                          <div className="input-group mb-3">
-                            <Field type="hidden" name="Id" id="medication_id" />
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="inputGroupSelect01"
-                            >
-                              Date
-                            </label>
-                            <DateTimePicker
-                              className="form-control kg-input"
-                              name="Date"
-                              value={values.Date}
-                              onChange={(val) => {
-                                setFieldValue("Date", val);
-                              }}
-                            />
-                            <br />
-                            <ErrorMessage name="Date" component={TextError} />
-                            <ErrorMessage name="Id" component={TextError} />
-                          </div>
-                          <div className="input-group mb-3">
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="inputGroupSelect01"
-                            >
-                              Animal No
-                            </label>
-                            <label
-                              className="form-control kg-input bg-white"
-                              id="medication_animal_no"
-                              name="medication_animal_no"
-                            >
-                              {values.AnimalName} - {values.AnimalNo}
-                            </label>
-                            <ErrorMessage
-                              name="AnimalID"
-                              component={TextError}
-                            />
-                          </div>
-                          {/*
-                          <div className="input-group mb-3">
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="inputGroupSelect01"
-                            >
-                              Disease
-                            </label>
-                            <Field
-                              className="form-control kg-input"
-                              id="medication_disease"
-                              name="Disease"
-                            />
-                            <br />
-                            <ErrorMessage
-                              name="Disease"
-                              component={TextError}
-                            />
-                          </div>
-                            */}
-                          <div className="input-group mb-3">
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="medication_disease_id"
-                            >
-                              Select Disease
-                            </label>
-                            <Select
-                              id="medication_disease_id"
-                              name="DiseaseID"
-                              autoSize={true}
-                              className="form-control"
-                              value={values.DiseaseID}
-                              options={this.state.diseaseOptions}
-                              onChange={(value)=>{console.log(value);setFieldValue('DiseaseID',value);}}
-                              onInputChange={(value) => {
-                                if (value != "") {
-                                  this.loadDiseases(value);
-                                }
-                              }}
-                            />
-                            <br />
-                            <ErrorMessage
-                              name="DiseaseID"
-                              component={TextError}
-                            />
-                          </div>
-                          <div className="input-group mb-3">
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="inputGroupSelect01"
-                            >
-                              Symptoms
-                            </label>
-                            <Field
-                              className="form-control kg-input"
-                              id="medication_symptoms"
-                              name="Symptoms"
-                            />
-                            <br />
-                            <ErrorMessage
-                              name="Symptoms"
-                              component={TextError}
-                            />
-                          </div>
-                          <div className="input-group mb-3">
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="inputGroupSelect01"
-                            >
-                              Diagnosis
-                            </label>
-                            <Field
-                              className="form-control kg-input"
-                              id="medication_diagnosis"
-                              name="Diagnosis"
-                            />
-                            <br />
-                            <ErrorMessage
-                              name="Diagnosis"
-                              component={TextError}
-                            />
-                          </div>
-                          <div className="input-group mb-3">
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="inputGroupSelect01"
-                            >
-                              Treatment
-                            </label>
-                            <Field
-                              className="form-control kg-input"
-                              id="medication_treatment"
-                              name="Treatment"
-                            />
-                            <br />
-                            <ErrorMessage
-                              name="Treatment"
-                              component={TextError}
-                            />
-                          </div>
-                          <div className="input-group mb-3">
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="inputGroupSelect01"
-                            >
-                              Prognosis
-                            </label>
-                            <Select
-                              options={this.propnosis_options}
-                              value={values.Prognosis}
-                              autoSize={true}
-                              className="form-control"
-                              onChange={(val) => {
-                                setFieldValue("Prognosis", val);
-                              }}
-                            />
-                            <br />
-                            <ErrorMessage
-                              name="Prognosis"
-                              component={TextError}
-                            />
-                          </div>
-                          <div className="input-group mb-3">
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="inputGroupSelect01"
-                            >
-                              Result
-                            </label>
-                            <Field
-                              className="form-control kg-input"
-                              id="medication_result"
-                              name="Result"
-                            />
-                            <br />
-                            <ErrorMessage name="Result" component={TextError} />
-                          </div>
-                          <div className="input-group mb-3">
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="inputGroupSelect01"
-                            >
-                              Cost of Treatment
-                            </label>
-                            <Field
-                              className="form-control kg-input"
-                              type="number"
-                              id="medication_cost_of_treatment"
-                              name="CostOfTreatment2"
-                            />
-                            <br />
-                            <ErrorMessage
-                              name="CostOfTreatment2"
-                              component={TextError}
-                            />
-                          </div>
-                          <div className="input-group mb-3">
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="inputGroupSelect01"
-                            >
-                              Doctor
-                            </label>
-                            <label
-                              className="form-control kg-input bg-white"
-                              onClick={this.selectDoctor}
-                              id="medication_doctor_name"
-                            >
-                              {values.DoctorDetail}
-                            </label>
-                            <Field
-                              type="hidden"
-                              className="form-control kg-input"
-                              id="medication_doctor_id"
-                              name="DoctorIDs"
-                            />
-                            <br />
-                            <ErrorMessage
-                              name="DoctorIDs"
-                              component={TextError}
-                            />
-                          </div>
-                          <div className="input-group mb-3">
-                            <label
-                              className="input-group-text kg-label"
-                              htmlFor="inputGroupSelect01"
-                            >
-                              Remarks
-                            </label>
-                            <Field
-                              className="form-control kg-input"
-                              id="medication_remarks"
-                              name="Remarks"
-                            />
-                            <br />
-                            <ErrorMessage
-                              name="Remarks"
-                              component={TextError}
-                            />
-                          </div>
-
+                          <FormField as="date" value={values.Date} id="Date" name="Date" label="Date" 
+                          before_label={<Field type="hidden" name="Id" id="medication_id" />} setFieldValue={setFieldValue} 
+                          content={<label className="form-control kg-input bg-white" id="medication_animal_no" name="medication_animal_no">{values.AnimalName} - {values.AnimalNo}</label>}
+                          error_after={<ErrorMessage name="Id" component={TextError} />}
+                          />
+                          <FormField as="empty" id="medication_animal_no" name="AnimalID" label="Animal No" 
+                          content={<label className="form-control kg-input bg-white" id="medication_animal_no" name="medication_animal_no">{values.AnimalName} - {values.AnimalNo}</label>}/>
+                          <FormField as="select" id="medication_disease_id" name="DiseaseID" label="Select Disease" options={this.state.diseaseOptions} 
+                            setFieldValue={setFieldValue}
+                            ajax={true}
+                            ajaxSource={this.loadDiseases2}
+                          />
+                          <FormField as="input" id="medication_symptoms" name="Symptoms" label="Symptoms"/>
+                          <FormField as="input" id="medication_diagnosis" name="Diagnosis" label="Diagnosis"/>
+                          <FormField as="input" id="medication_treatment" name="Treatment" label="Treatment"/>
+                          <FormField as="select" id="inputGroupSelect01" name="Prognosis" label="Prognosis" 
+                            options={this.propnosis_options} 
+                            setFieldValue={setFieldValue}
+                          />
+                          <FormField as="input" id="medication_result" name="Result" label="Result"/>
+                          <FormField as="input" id="medication_cost_of_treatment" name="CostOfTreatment2" label="Cost of Treatment"/>
+                          <FormField as="hidden" id="medication_doctor_name" name="DoctorIDs" label="Doctor" field_component_before={<label className="form-control kg-input bg-white" onClick={this.selectDoctor} id="medication_doctor_name">{values.DoctorDetail}</label>}/>
+                          <FormField as="input" id="medication_remarks" name="Remarks" label="Remarks"/>
                           <div style={medication_button}>
                             <div style={float_right}>
                               <button
@@ -718,5 +501,38 @@ export default class CowMedicationDetail extends Component {
       });
     }
     this.setState({ diseaseOptions: new_data });
+  }
+  loadDiseases2=async (inputValue) => {
+    let data = new FormData();
+    data.append("DiseaseName", inputValue);
+    data.append("PageNo", 1);
+    data.append("RecordsPerPage", 10);
+    const requestOptions = {
+      method: "POST",
+      body: data,
+    };
+    let response = await fetch(
+      `${apiUrl}Disease/GetDiseaseIdNamePairByDiseaseName`,
+      requestOptions
+    )
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          return result;
+        },
+        (error) => {
+          return error;
+        }
+      );
+    var data_ = Object.entries(response);
+    let new_data = [];
+    for (let i = 0; i < data_.length; i++) {
+      new_data.push({
+        value: data_[i][0],
+        label: data_[i][1],
+      });
+    }
+    return new_data;
+    //this.setState({ diseaseOptions: new_data });
   }
 }

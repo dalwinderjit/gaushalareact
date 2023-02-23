@@ -410,8 +410,10 @@ export default class AddCowServiceModal extends Component {
       if (error && error.trim().length > 0) {
         return <label className="error-label">{error}</label>;
       } else {
-        return "";
+        return <></>;
       }
+    }else{
+      return <></>
     }
   }
   selectDam = () => {

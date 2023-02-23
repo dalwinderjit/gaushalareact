@@ -293,9 +293,9 @@ export default class CowProfileEditForm extends Component {
   }
   error(error, touched) {
     if (error || touched) {
-      return (<label className="error-label">{error}</label>)
+      return (<label123 className="error-label">{error}</label123>)
     } else {
-      return "";
+      return <></>;
     }
   }
   selectDam = () => {
@@ -418,7 +418,7 @@ export default class CowProfileEditForm extends Component {
                         </td>
                       </tr>
                       <tr><td>Fat</td><td><input type="text" className="cpinput-disabled" value={values.butterFat} disabled id="cow_edit_cow_butter_fat" name="butterFat" onChange={handleChange} onBlur={handleBlur} />{this.error(errors.butterFat, errors.touched)}</td></tr>
-                      <tr><td>Cow Sold</td><td>{values.sold===false?<button type="button" onClick={this.showSellCowModal} className="btn btn-success btn-sm">Sell Cow</button>:<button type="button" onClick={this.getSellCowDetail} className="btn btn-success btn-sm">Edit Sell Cow</button>} <input type="checkbox" checked={values.sold}/></td></tr>
+                      <tr><td>Cow Sold</td><td>{values.sold===false?<button type="button" onClick={this.showSellCowModal} className="btn btn-success btn-sm">Sell Cow</button>:<button type="button" onClick={this.getSellCowDetail} className="btn btn-success btn-sm">Edit Sell Cow</button>} <input type="checkbox" checked={values.sold} id="cow_sold" name="cow_sold"/></td></tr>
                       <tr><td>Cow Location</td>
                         <td>
                           <select className="kgsdropdown cpinput-disabled" id="cow_edit_cow_location" name="location" disabled value={values.location} onChange={handleChange} onBlur={handleBlur}>
@@ -439,7 +439,7 @@ export default class CowProfileEditForm extends Component {
                         <td colSpan="2">
                           <div className="onoff-switch">
                             Turn Milking
-                            <input type="checkbox" id="cowStatus" name="milkingStatus" onChange={handleChange} onBlur={handleBlur} checked={values.milkingStatus} />
+                            <input type="checkbox" id="cowStatus" name="milkingStatus" onChange={(val)=>{setFieldValue('milkstatus',!(values.milkingStatus));console.log("value",values.milkingStatus); this.toggleMilking(values.milkingStatus);}}  checked={values.milkingStatus} />
                             <span className="left-on">ON</span><span className="right-off">OFF</span>
                           </div>
                         </td>
@@ -580,5 +580,53 @@ export default class CowProfileEditForm extends Component {
   }
   setSellCow=(type=true)=>{
     this.formikref.setFieldValue('sold',type);
+  }
+  toggleMilking=async (val)=>{
+    //change milking status
+    console.log(val);
+    let status= val;
+    $('label.error-label').remove();
+    if (this.context.selectedCow.id !==null && this.context.selectedCow.id !==undefined && this.context.selectedCow.id !=="") {
+      var formData = new FormData();
+      //formData.append('formFile', $('#cow_edit_cow_image')[0].files[0]);
+      //console.log(this.context);
+      var data_ = {
+        id: this.context.selectedCow.id,
+        milking: status
+      };
+      $.each(data_, function (k, val) {
+        formData.append(k, val);
+      });
+      this.templateManager.showLoading('Updating Cow');
+      const requestOptions = {
+        method: 'POST',
+        body: formData
+      };
+      let data = await fetch(`${apiUrl}Cows/SetCowMilking/`, requestOptions)
+        .then(res => res.json())
+        .then(
+          (result) => {
+            return result
+          },
+          (error) => {
+            return error
+          }
+        )
+        console.log("DATA",data);
+      this.templateManager.hideLoading();
+          
+      if (data.data.status === "success") {
+        alert('succes');
+        this.templateManager.showSuccessMessage(data.data.message);
+        this.disableEditForm();
+      } else {
+        alert('error');
+        //console.log(data.errors);
+        //setFieldError('tagNo',data.errors.tagNo);
+        this.templateManager.showErrorMessage(data.data.message);
+      }
+    } else {
+      this.templateManager.showErrorMessage("Invalid Cow Data");
+    }
   }
 }

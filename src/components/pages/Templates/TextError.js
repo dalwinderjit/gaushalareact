@@ -9,8 +9,10 @@ export default function TextError(props) {
     error = props.children;
   }
   return (
-    <label className="error-label">
-      {error}
-    </label>
+    <span>
+      <label className="error-label">
+        {error}
+      </label>
+    </span>
   )
 }

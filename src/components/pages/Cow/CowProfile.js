@@ -17,6 +17,7 @@ import CowComparisonChart from "./CowComparisonChart";
 import CowMedicationDetail from "./CowMedicationDetail";
 import CowSummary from "./CowSummary";
 import SellCowModal from "./SellCowModal";
+import ErrorBoundary from "../Templates/ErrorBoundary";
 //const Footer = React.lazy(()=>{import("../../Footer")});
 
 export default class CowProfile extends Component {
@@ -133,6 +134,7 @@ export default class CowProfile extends Component {
                 cowProfile={this}
                 templateManager={data.templateManager}
               />
+              <ErrorBoundary>
               <AddCowServiceModal
                 ref={(ref) => {
                   this.addCowServiceModal = ref;
@@ -141,6 +143,7 @@ export default class CowProfile extends Component {
                 cowProfile={this}
                 templateManager={data.templateManager}
               />
+              </ErrorBoundary>
               <SelectDamModal
                 ref={(ref) => {
                   this.selectDamModal = ref;

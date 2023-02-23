@@ -11,6 +11,7 @@ import DateTimePicker from "react-datetime-picker";
 import "../../../css/mystyle.css";
 import TextError from "../Templates/TextError";
 import axios from "axios";
+import ErrorBoundary from "../Templates/ErrorBoundary";
 export const FILE_SIZE = 102400;
 export const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
@@ -229,11 +230,15 @@ export default class SellCowModal extends Modal {
   };
   error(error, touched) {
     if (error || touched) {
-      if (error && error.trim().length > 0) {
-        return <label className="error-label">{error}</label>;
+      if (error && error!==undefined && error!==null && error.trim().length > 0) {
+        return <ErrorBoundary><label className="error-label">{error}</label></ErrorBoundary>;
       } else {
-        return "";
+        //return <></><label className="error-label">No errro</label>;
+        return <></>;
       }
+    }else{
+      //return <label className="error-label">No error 123</label>;
+      return <></>;
     }
   }
   selectDam = () => {
@@ -335,7 +340,8 @@ export default class SellCowModal extends Modal {
     this.formRef.current.setFieldValue('cowName',`${this.context.selectedCow.name}-${this.context.selectedCow.tagNo}`);
   }
   render() {
-    console.log(this.context);
+    //console.log(this.context);
+    console.log('render sell cow model');
     return (
       <>
         <div
@@ -383,7 +389,7 @@ export default class SellCowModal extends Modal {
                       <div className="row">
                         <div className="col-md-12">
                           <div className="title">Sell Cow</div>
-                          {this.showErrors(errors)}
+                          {/*this.showErrors(errors)*/}
                           <table className="table">
                             <thead>
                               <tr>
