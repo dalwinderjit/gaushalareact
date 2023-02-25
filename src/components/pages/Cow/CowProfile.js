@@ -18,6 +18,8 @@ import CowMedicationDetail from "./CowMedicationDetail";
 import CowSummary from "./CowSummary";
 import SellCowModal from "./SellCowModal";
 import ErrorBoundary from "../Templates/ErrorBoundary";
+import axios from "axios";
+import { apiUrl } from "../../../context/AppContext";
 //const Footer = React.lazy(()=>{import("../../Footer")});
 
 export default class CowProfile extends Component {
@@ -29,6 +31,7 @@ export default class CowProfile extends Component {
       2: "Abnormal",
       3: "Child Died",
     };
+    
   }
   loadCowWholeData = async (id) => {
     await this.cowEditForm.getDataByCowId(id);
@@ -46,6 +49,7 @@ export default class CowProfile extends Component {
     this.templateManager.hideLoading();
   }
   render() {
+    
     if (this.context) {
       this.context.activeUrl = "/admin/cow-profile";
     }
@@ -182,5 +186,6 @@ export default class CowProfile extends Component {
   showNewCowModal = () => {
     this.cowNewModal.show();
   };
+  
 }
 CowProfile.contextType = CowContext;

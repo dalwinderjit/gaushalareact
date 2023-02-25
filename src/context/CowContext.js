@@ -1,4 +1,6 @@
+import axios from "axios";
 import { Component, createContext } from "react";
+import { apiUrl } from "./AppContext";
 
 const CowContext = createContext();
 export class CowProvider extends Component {
@@ -120,6 +122,7 @@ export class CowProvider extends Component {
         return a[2] + "-" + a[1] + "-" + a[0];
       }
     };
+    this.setDataForCowProfile();
   }
   render() {
     //const {cow,tagNo} = this.state;
@@ -150,6 +153,26 @@ export class CowProvider extends Component {
         {this.props.children}
       </CowContext.Provider>
     );
+  }
+  getDataForCowProfilePage= async()=>{
+    const config = {
+      headers: {
+          Accept: '*/*',
+          //Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+    let data = await axios.post(`${apiUrl}Cows/GetDataForCowProfilePage/`, config);
+    console.log(data);
+    //this.setState({ employees: data.data.data });
+    return data;
+  }
+  setDataForCowProfile= async()=>{
+    let data = await this.getDataForCowProfilePage();
+    this.setState(
+      {
+        countries:data.data.countries,
+        breeds:data.data.breeds
+      });
   }
 }
 

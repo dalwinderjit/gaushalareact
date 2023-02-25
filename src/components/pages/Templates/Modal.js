@@ -7,6 +7,12 @@ export default class Modal extends Component {
         this.state = {
             show:true
         }
+        window.onkeydown = ( event ) =>{
+          if ( event.keyCode == 27 ) {
+            console.log("Base modal 123",this)
+            this.hide();
+          }
+        };
     }
   render() {
     return (

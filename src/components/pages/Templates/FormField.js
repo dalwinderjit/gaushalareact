@@ -7,15 +7,27 @@ import DateTimePicker from 'react-datetime-picker';
 
 export default class FormField extends Component {
   ajax = false;
+  afterContent = '';
+  before_label = '';
+  error_after = '';
+  inputElement = {
+    className: 'form-control kg-input'
+  };
+  selectElement ={
+    className : 'form-control'
+  }
+  dateElement ={
+    className : 'form-control kg-input'
+  }
   constructor(props) {
-    
     super(props)
-
     this.state = {
       options:props.options,
       options2:props.options
     }
-    console.log("OPSTIN",this.props)
+    
+
+    //console.log("OPSTIN",this.props)
   }
   getContent=()=>{
     switch(this.props.as){
@@ -24,7 +36,7 @@ export default class FormField extends Component {
         options={this.state.options2}
         value={this.props.value}
         autoSize={true}
-        className="form-control"
+        className={this.selectElement.className}
         onChange={(val) => { console.log(val); this.props.setFieldValue(this.props.name, val) }}
         onInputChange = {(val)=>{if(this.props.ajax===true){console.log(val);this.loadAjaxData(val)}}}
         isMulti={this.props.isMulti}
@@ -33,7 +45,7 @@ export default class FormField extends Component {
         break;
       case 'input':
           return <Field
-          className="form-control kg-input"
+          className={this.inputElement.className}
           id={this.props.id}
           name={this.props.name}
         />
@@ -47,7 +59,7 @@ export default class FormField extends Component {
         break;
       case 'date':
         return <DateTimePicker
-          className="form-control kg-input"
+          className={this.dateElement.className}
           id={this.props.id}
           name={this.props.name}
           value={this.state.value}
@@ -73,6 +85,7 @@ export default class FormField extends Component {
           {this.props.label}
         </label>
        {this.getContent()}
+       {this.afterConte}
         <br />
         <ErrorMessage
           name={this.props.name}
