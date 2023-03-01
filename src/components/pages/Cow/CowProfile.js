@@ -46,10 +46,10 @@ export default class CowProfile extends Component {
   componentDidMount(props) {
     this.search.cowEditForm = this.cowEditForm;
     this.selectDamModal.cowEdit = this.cowEditForm;
+    this.context.initializeData();
     this.templateManager.hideLoading();
   }
   render() {
-    
     if (this.context) {
       this.context.activeUrl = "/admin/cow-profile";
     }
@@ -186,6 +186,9 @@ export default class CowProfile extends Component {
   showNewCowModal = () => {
     this.cowNewModal.show();
   };
+  setDataForCowProfile= async()=>{
+    this.context.initializeData();
+  }
   
 }
 CowProfile.contextType = CowContext;

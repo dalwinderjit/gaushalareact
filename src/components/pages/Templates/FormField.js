@@ -14,7 +14,7 @@ export default class FormField extends Component {
     className: 'form-control kg-input'
   };
   selectElement ={
-    className : 'form-control'
+    className : ''
   }
   dateElement ={
     className : 'form-control kg-input'
@@ -25,20 +25,17 @@ export default class FormField extends Component {
       options:props.options,
       options2:props.options
     }
-    
-
-    //console.log("OPSTIN",this.props)
   }
   getContent=()=>{
     switch(this.props.as){
       case 'select':
         return <Select
-        options={this.state.options2}
+        options={this.getSelectOptions()}
         value={this.props.value}
         autoSize={true}
         className={this.selectElement.className}
-        onChange={(val) => { console.log(val); this.props.setFieldValue(this.props.name, val) }}
-        onInputChange = {(val)=>{if(this.props.ajax===true){console.log(val);this.loadAjaxData(val)}}}
+        onChange={(val) => {console.log(val); this.props.setFieldValue(this.props.name, val);if(this.props.onChange){this.props.onChange(val)};}}
+        onInputChange = {(val)=>{console.log('hi',val);if(this.props.ajax===true){console.log(val);this.loadAjaxData(val)}else{this.getSelectOptions()}}}
         isMulti={this.props.isMulti}
         placeholder={this.props.placeholder}
       />
@@ -71,7 +68,6 @@ export default class FormField extends Component {
         />
       case 'empty':
           return this.props.content;
-
     }
   }
   render() {
@@ -101,22 +97,28 @@ export default class FormField extends Component {
       this.setState({ options2: data });
     }
   }
-  /*getSelectOptions = () => {
+  getSelectOptions = () => {
       let options = [];
-      console.log(this.state.options);
+      //console.log(this.state.options);
       let options2 = Object.entries(this.state.options);
-      console.log(options2);
+      //console.log(options2);
       for (let i = 0; i < options2.length; i++) {
         let items = Object.entries(options2[i]);
-        console.log("ITEM",items);
+        //console.log("ITEM",items);
         options.push({
           label: items[1][1],
           value: items[0][1]
         })
       }
-      console.log(options);
-      //this.setState({options2:options})
+      
       return options;
-  }*/
-  
+  }
+  clearValue=()=>{
+    switch(this.props.as){
+      case 'select':
+        console.log('clearing field values');
+        this.props.setFieldValue(this.props.name,'');
+        break;
+    }    
+  }
 }

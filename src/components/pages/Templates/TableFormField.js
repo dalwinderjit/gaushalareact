@@ -11,7 +11,7 @@ export default class TableFormField extends FormField {
     className: 'cpinput'
   };
   selectElement ={
-    className : 'form-control'
+    className : ''
   }
   dateElement ={
     className : 'form-control kg-input'
@@ -22,11 +22,9 @@ export default class TableFormField extends FormField {
       options:props.options,
       options2:props.options
     }
-    //console.log("OPSTIN",this.props)
     this.inputElement.className= 'cpinput';
     this.dateElement.className= '';
   }
-  
   render() {
     return (
       <>
@@ -46,6 +44,7 @@ export default class TableFormField extends FormField {
       let data = await this.props.ajaxSource(inputValue);
       this.setState({ options2: data });
     }
+    
   }
   
 }

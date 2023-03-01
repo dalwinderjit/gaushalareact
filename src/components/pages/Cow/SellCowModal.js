@@ -33,8 +33,10 @@ export default class SellCowModal extends Modal {
       cowTagNo:'',
       taskType:'Add',
       animal_type:'Cow'
+      /*countries:{},
+      states:{},
+      districts:{}*/
     };
-
     this.templateManager = props.templateManager;
     //    let fields = ['Id','AnimalId','Price','BuyerSellerId','Date','SupervisorId','SupervisorName',
     //'AnimalNo','Name','Country','State','Distric','VillMohalla','StreetNo','HouseNo','PIN','PhoneNumber',
@@ -147,13 +149,11 @@ export default class SellCowModal extends Modal {
       onSubmit: async (formValues, { setSubmitting, setFieldError,resetForm}) => {
         //console.log("Add Cow Service");
         var formData = new FormData();
-        
         //if(formValues.cowID && formValues.cowID===this.context.selectedCow.id)
         //let fields = ['Id','AnimalId','Price','BuyerSellerId','Date','SupervisorId','SupervisorName',
-    //'AnimalNo','Name','Country','State','District','VillMohalla','StreetNo','HouseNo','PIN','PhoneNumber',
-    //'Email'];
+        //'AnimalNo','Name','Country','State','District','VillMohalla','StreetNo','HouseNo','PIN','PhoneNumber',
+        //'Email'];
         var data_ = {
-          
           AnimalId: this.context.selectedCow.id,
           Price: formValues.Price,
           BuyerSellerId: formValues.BuyerSellerId,
@@ -429,7 +429,8 @@ export default class SellCowModal extends Modal {
                                 </td>
                                   </tr>*/}
                               <TableFormField as="input" id="Price" name="Price" label="Cow Price"/>
-                              <TableFormField as="empty" id="Price" name="Price" label="Select Super visor (selling person)" content={<><span id="">
+                              <TableFormField as="empty" id="Price" name="Price" label="Select Super visor (selling person)" 
+                                content={<><span id="">
                                     {values.SupervisorName}
                                   </span>
                                   <input
@@ -452,42 +453,16 @@ export default class SellCowModal extends Modal {
                                       this.props.cowProfile.selectUserModal.show();
                                     }}
                                   ></span></>}/>
-                              {/*<tr>
-                                <td>Select Super visor (selling person)</td>
-                                <td>
-                                  <span id="">
-                                    {values.SupervisorName}
-                                  </span>
-                                  <input
-                                    type="hidden"
-                                    id=""
-                                    name="SupervisorId"
-                                    value={values.SupervisorId}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                  />
-                                  <span
-                                    className="fa fa-edit "
-                                    id="cow_service_cow_select_supervisor"
-                                    title="Select Super Visor"
-                                    onClick={async () => {
-                                      //console.log("select doctors");
-                                      this.props.cowProfile.selectUserModal.currentObject =this;
-                                      //fetch Supervisors
-                                      this.props.cowProfile.selectUserModal.setState({selectedDoctorId : this.state.addSoldDetail.superVisorID});
-                                      this.props.cowProfile.selectUserModal.show();
-                                    }}
-                                  ></span>
-                                  {this.error(errors.SupervisorId, touched)}
-                                </td>
-                                  </tr>*/}
+                             
                               <TableFormField as="input" id="Name" name="Name" label="Buyer Name"/>
                               <ErrorBoundary>
+                                
                               <TableFormField as="select" id="Country" name="Country" label="Select Country"
                                 options={this.context.countries} 
                                 setFieldValue={setFieldValue}
-                                /*ajax={true}
-                                ajaxSource={this.loadDiseases2}*/
+                                ajax={false}
+                                onChange={this.getSetStates}
+                                /*ajaxSource={this.loadDiseases2}*/
                               />
                               </ErrorBoundary>
                               {/*<FormField as="select" id="medication_disease_id" name="DiseaseID" label="Select Disease" options={this.context.countries} 
@@ -495,197 +470,36 @@ export default class SellCowModal extends Modal {
                                 ajax={true}
                                 ajaxSource={this.loadDiseases2}
                                 />*/}
-                              <tr className="succNorDel succDied">
-                                <td>Select Country</td>
-                                <td>
-                                  <select
-                                    className="kgsdropdown cpinput"
-                                    id="Country"
-                                    name="Country"
-                                    value={values.Country}
-                                    onChange={(e) => {
-                                       setFieldValue('Country',e.target.value);
-                                    }}
-                                    onBlur={handleBlur}
-                                  >
-                                    <option value="">
-                                      Select Country
-                                    </option>
-                                    {Object.entries(
-                                      this.context.countries
-                                    ).map((value, key) => {
-                                      return (
-                                        <option key={key} value={value[0]}>
-                                          {value[1]}
-                                        </option>
-                                      );
-                                    })}
-                                  </select>
-                                  {this.error(errors.Country, touched)}
-                                </td>
-                              </tr>
-                              <tr className="succNorDel succDied">
-                                <td>Select State</td>
-                                <td>
-                                  <select
-                                    className="kgsdropdown cpinput"
-                                    id="cow_service_cow_delivery_status"
-                                    name="State"
-                                    value={values.State}
-                                    onChange={(e) => {
-                                       setFieldValue('State',e.target.value);
-                                    }}
-                                    onBlur={handleBlur}
-                                  >
-                                    <option value="">
-                                      Select State
-                                    </option>
-                                    {Object.entries(
-                                      this.context.states
-                                    ).map((value, key) => {
-                                      return (
-                                        <option key={key} value={value[0]}>
-                                          {value[1]}
-                                        </option>
-                                      );
-                                    })}
-                                  </select>
-                                  {this.error(errors.State, touched)}
-                                </td>
-                              </tr>
-                              <tr className="succNorDel succDied">
-                                <td>Select District</td>
-                                <td>
-                                  <select
-                                    className="kgsdropdown cpinput"
-                                    id="cow_service_cow_delivery_status"
-                                    name="District"
-                                    value={values.District}
-                                    onChange={(e) => {
-                                       setFieldValue('District',e.target.value);
-                                    }}
-                                    onBlur={handleBlur}
-                                  >
-                                    <option value="">
-                                      Select District
-                                    </option>
-                                    {Object.entries(
-                                      this.context.districts
-                                    ).map((value, key) => {
-                                      return (
-                                        <option key={key} value={value[0]}>
-                                          {value[1]}
-                                        </option>
-                                      );
-                                    })}
-                                  </select>
-                                  {this.error(errors.District, touched)}
-                                </td>
-                              </tr>
-                              
-                              <tr className="succNorDel">
-                                <td>Village/Mohalla</td>
-                                <td>
-                                  <input
-                                    type="text"
-                                    className="cpinput"
-                                    id="cow_service_cow_lactation_number"
-                                    name="VillMohalla"
-                                    value={values.VillMohalla}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                  />
-                                  {this.error(errors.VillMohalla, touched)}
-                                </td>
-                              </tr>
-                              <tr className="succNorDel">
-                                <td>Street Number</td>
-                                <td>
-                                  <input
-                                    type="text"
-                                    className="cpinput"
-                                    id="StreetNo"
-                                    name="StreetNo"
-                                    value={values.StreetNo}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                  />
-                                  {this.error(errors.StreetNo, touched)}
-                                </td>
-                              </tr>
-                              <tr className="succNorDel">
-                                <td>House Number</td>
-                                <td>
-                                  <input
-                                    type="text"
-                                    className="cpinput"
-                                    id="HouseNo"
-                                    name="HouseNo"
-                                    value={values.HouseNo}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                  />
-                                  {this.error(errors.HouseNo, touched)}
-                                </td>
-                              </tr>
-                              <tr className="succNorDel">
-                                <td>PIN</td>
-                                <td>
-                                  <input
-                                    type="text"
-                                    className="cpinput"
-                                    id="PIN"
-                                    name="PIN"
-                                    value={values.PIN}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                  />
-                                  {this.error(errors.PIN, touched)}
-                                </td>
-                              </tr>
-                              <tr className="succNorDel">
-                                <td>Phone Number</td>
-                                <td>
-                                  <input
-                                    type="text"
-                                    className="cpinput"
-                                    id="PhoneNumber"
-                                    name="PhoneNumber"
-                                    value={values.PhoneNumber}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                  />
-                                  {this.error(errors.PhoneNumber, touched)}
-                                </td>
-                              </tr>
-                              <tr className="succNorDel">
-                                <td>Email</td>
-                                <td>
-                                  <input
-                                    type="text"
-                                    className="cpinput"
-                                    id="email"
-                                    name="Email"
-                                    value={values.Email}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                  />
-                                  {this.error(errors.Email, touched)}
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>Remarks</td>
-                                <td>
-                                  <textarea
-                                    className="cpinput w-100"
-                                    value={values.Remarks}
-                                    id="Remarks"
-                                    name="Remarks"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                  ></textarea>
-                                </td>
-                              </tr>
+                              <TableFormField as="select" id="cow_service_cow_delivery_status" name="State" label="Select State"
+                                options={this.context.states} 
+                                setFieldValue={setFieldValue}
+                                ajax={false}
+                                onChange={this.getSetDistricts}
+                                ref={(ref)=>{this.stateField = ref;}} 
+                                /*ajaxSource={this.loadDiseases2}*/
+                              />
+                              <TableFormField as="select" id="District" name="District" label="Select District"
+                                options={this.context.districts}
+                                setFieldValue={setFieldValue}
+                                ajax={false}
+                                onChange={this.getSetTehsils}
+                                ref={(ref)=>{this.districtField = ref;}} 
+                                /*ajaxSource={this.loadDiseases2}*/
+                              />
+                              <TableFormField as="select" id="Tehsil" name="Tehsil" label="Select Tehsil"
+                                options={this.context.tehsils}
+                                setFieldValue={setFieldValue}
+                                ajax={false}
+                                ref={(ref)=>{this.tehsilField = ref;}} 
+                                /*ajaxSource={this.loadDiseases2}*/
+                              />
+                              <TableFormField as="input" id="VillMohalla" name="VillMohalla" label="Village/Mohalla"/>
+                              <TableFormField as="input" id="StreetNo" name="StreetNo" label="Street Number"/>
+                              <TableFormField as="input" id="HouseNo" name="HouseNo" label="House Number"/>
+                              <TableFormField as="input" id="PIN" name="PIN" label="PIN"/>
+                              <TableFormField as="input" id="PhoneNumber" name="PhoneNumber" label="Phone Number"/>
+                              <TableFormField as="input" id="Email" name="Email" label="Email"/>
+                              <TableFormField as="input" id="Remarks" name="Remarks" label="Remarks"/>
                             </tbody>
                           </table>
                         </div>
@@ -809,5 +623,47 @@ export default class SellCowModal extends Modal {
     }else{
       return false;
     }
+  }
+  getSetStates=async (val)=>{
+    let countryID = val.value;
+    const config = {
+      headers: {
+          Accept: '*/*',
+          //Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+    let data = await axios.post(`${apiUrl}AddressState/GetAddressStateIDNamePair?CountryID=`+countryID, {},config);
+    //this.setState({states:data.data});
+    this.stateField.setState({options:data.data});
+    this.stateField.forceUpdate();
+    this.stateField.clearValue();
+  }
+  getSetDistricts=async (val)=>{
+    let stateID = val.value;
+    const config = {
+      headers: {
+          Accept: '*/*',
+          //Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+    let data = await axios.post(`${apiUrl}AddressDistrict/GetAddressDistrictIDNamePair?StateID=`+stateID, {},config);
+    //this.setState({states:data.data});
+    this.districtField.setState({options:data.data});
+    this.districtField.forceUpdate();
+    this.districtField.clearValue();
+  }
+  getSetTehsils=async (val)=>{
+    let districtID = val.value;
+    const config = {
+      headers: {
+          Accept: '*/*',
+          //Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+    let data = await axios.post(`${apiUrl}AddressTehsil/GetAddressTehsilIDNamePair?DistrictID=`+districtID, {},config);
+    //this.setState({states:data.data});
+    this.tehsilField.setState({options:data.data});
+    this.tehsilField.clearValue();
+    this.tehsilField.forceUpdate();
   }
 }

@@ -5,6 +5,7 @@ import { apiUrl } from "./AppContext";
 const CowContext = createContext();
 export class CowProvider extends Component {
   constructor(props) {
+    //console.log("Cow COntext created");
     super(props);
     this.state = {
       cowID: "",
@@ -105,6 +106,9 @@ export class CowProvider extends Component {
         3: "BATHINDA",
         4: "FARIDKOT"
       },
+      tehsils:{
+
+      },
       imageUrl: "http://localhost:4000/images/",
       calvingDetail: {
         data: [],
@@ -122,13 +126,21 @@ export class CowProvider extends Component {
         return a[2] + "-" + a[1] + "-" + a[0];
       }
     };
-    this.setDataForCowProfile();
+    //this.setDataForCowProfileBeforeMounted();
+    //console.log("CC STATE",this.state);
+  }
+  componentDidMount= async ()=>{
+    //let data = await this.setDataForCowProfile();
+    //console.log(data);
+    
+  }
+  setCountries=(countries)=>{
+    this.setState({countries:countries});
   }
   render() {
-    //const {cow,tagNo} = this.state;
     const { cowID, breeds, colors,pregnancy_status,mating_type,delivery_status,gender ,selectedCow,
-      locations,milkStatus,birthStatus,countries,states,districts} = this.state;
-    const { convertDateTo1 } = this;
+      locations,milkStatus,birthStatus,countries,states,districts,tehsils} = this.state;
+    const { convertDateTo1,setCountries,initializeData } = this;
     //console.log(cow);
     return (
       <CowContext.Provider
@@ -147,7 +159,10 @@ export class CowProvider extends Component {
           countries,
           states,
           districts,
+          tehsils,
           convertDateTo1,
+          setCountries,
+          initializeData
         }}
       >
         {this.props.children}
@@ -162,17 +177,43 @@ export class CowProvider extends Component {
       }
     };
     let data = await axios.post(`${apiUrl}Cows/GetDataForCowProfilePage/`, config);
-    console.log(data);
     //this.setState({ employees: data.data.data });
     return data;
   }
   setDataForCowProfile= async()=>{
     let data = await this.getDataForCowProfilePage();
-    this.setState(
-      {
-        countries:data.data.countries,
-        breeds:data.data.breeds
-      });
+    if(data){
+      //console.log(data);
+      this.setState(
+        {
+          gender:data.data.Gender,
+          countries:data.data.countries,
+          breeds:data.data.breeds,
+          colors:data.data.colors,
+          pregnancy_status:data.data.pregnancyStatus2,
+          mating_type:data.data.matingType,
+          delivery_status:data.data.deliveryType,
+          locations:data.data.animalLocations,
+          milkStatus:data.data.milkStatus,
+          birthStatus:data.data.birthStatus
+        }
+      );
+      //console.log(this.state);
+    }
+    return data;
+  }
+  setDataForCowProfileBeforeMounted= async()=>{
+    let data = await this.getDataForCowProfilePage();
+    if(data){
+      console.log(data);
+      this.state.counties = data.countries;
+      this.state.breeds = data.breeds;
+      console.log(this.state);
+    }
+    return data;
+  }
+  initializeData = async()=>{
+    let data = this.setDataForCowProfile();
   }
 }
 

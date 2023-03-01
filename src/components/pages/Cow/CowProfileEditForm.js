@@ -298,7 +298,7 @@ export default class CowProfileEditForm extends Component {
   }
   error(error, touched) {
     if (error || touched) {
-      return (<label123 className="error-label">{error}</label123>)
+      return (<label className="error-label">{error}</label>)
     } else {
       return <></>;
     }

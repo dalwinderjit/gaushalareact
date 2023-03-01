@@ -5,8 +5,6 @@ const HeiferContext = createContext();
 export class HeiferProvider extends Component {
   constructor(props) {
     super(props);
-    
-    
     this.state = {
       heiferID: "",
       tagNo: "SW-719",
@@ -117,7 +115,7 @@ export class HeiferProvider extends Component {
       },
       interCalvPeriod: {},
     };
-    this.setHeifersPageData();
+    
     this.convertDateTo1 = (date) => {
       if (date !== "") {
         var a = date.split("/");
@@ -155,6 +153,9 @@ export class HeiferProvider extends Component {
       </HeiferContext.Provider>
     );
   }
+  componentDidMount= async ()=>{
+    //this.setHeifersPageData();
+  }
   getHeiferPageData=async ()=>{
     const requestOptions = {
       method: 'POST',
@@ -181,5 +182,4 @@ export class HeiferProvider extends Component {
     this.setState({breeds:page_data.breeds,colors:page_data.colors,location:page_data.animalLocations});
   }
 }
-
 export default HeiferContext;
