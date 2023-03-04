@@ -32,7 +32,6 @@ export default class Modal extends Component {
   }
   show = async () => {
     this.setState({show:true});
-    console.log("STET",this.state);
     if(this.state.data=== undefined || this.state.data.length===0){
         this.search();
     }

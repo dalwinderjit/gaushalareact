@@ -4,6 +4,8 @@ import TextError from './TextError';
 import Select from "react-select";
 import { apiUrl } from '../../../context/AppContext';
 import DateTimePicker from 'react-datetime-picker';
+import ErrorBoundary from '../../ErrorBoundary';
+import { object } from 'yup';
 
 export default class FormField extends Component {
   ajax = false;
@@ -34,10 +36,11 @@ export default class FormField extends Component {
         value={this.props.value}
         autoSize={true}
         className={this.selectElement.className}
-        onChange={(val) => {console.log(val); this.props.setFieldValue(this.props.name, val);if(this.props.onChange){this.props.onChange(val)};}}
-        onInputChange = {(val)=>{console.log('hi',val);if(this.props.ajax===true){console.log(val);this.loadAjaxData(val)}else{this.getSelectOptions()}}}
+        onChange={(val) => { this.props.setFieldValue(this.props.name, val);if(this.props.onChange){this.props.onChange(val)};}}
+        onInputChange = {(val)=>{if(this.props.ajax===true){;this.loadAjaxData(val)}else{this.getSelectOptions()}}}
         isMulti={this.props.isMulti}
         placeholder={this.props.placeholder}
+        ref={(ref)=>{this.currentElement = ref;}}
       />
         break;
       case 'input':
@@ -59,8 +62,9 @@ export default class FormField extends Component {
           className={this.dateElement.className}
           id={this.props.id}
           name={this.props.name}
-          value={this.state.value}
+          value={this.props.value}
           onChange={(val) => {
+            console.log('onchage date called');
             console.log(val);
             this.setState({value:val});
             this.props.setFieldValue(this.props.name, val);
@@ -80,7 +84,9 @@ export default class FormField extends Component {
         >
           {this.props.label}
         </label>
+        <ErrorBoundary>
        {this.getContent()}
+       </ErrorBoundary>
        {this.afterConte}
         <br />
         <ErrorMessage
@@ -102,6 +108,10 @@ export default class FormField extends Component {
       //console.log(this.state.options);
       let options2 = Object.entries(this.state.options);
       //console.log(options2);
+      options.push({
+        label: 'Select One',
+        value: ''
+      })
       for (let i = 0; i < options2.length; i++) {
         let items = Object.entries(options2[i]);
         //console.log("ITEM",items);
@@ -116,8 +126,45 @@ export default class FormField extends Component {
   clearValue=()=>{
     switch(this.props.as){
       case 'select':
-        console.log('clearing field values');
+        this.currentElement.setValue(null);
         this.props.setFieldValue(this.props.name,'');
+        break;
+    }    
+  }
+  setValue=(val)=>{
+    switch(this.props.as){
+      case 'select':
+        let value1 = null;
+        if(val instanceof Object === true){
+            value1 = parseInt(val.value);
+        }else{
+          value1 = val;
+        }
+        let option = {label:'Select One',value:''};
+        let options2 = Object.entries(this.state.options);
+        if(options2.length>0){
+          for (let i = 0; i < options2.length; i++) {
+            let items = Object.entries(options2[i]);
+            if(parseInt(items[0][1])===parseInt(value1)){
+              option = {
+                label: items[1][1],
+                value: items[0][1]
+              };
+            }
+          }
+          if(option!=null){
+            this.currentElement.setValue(option);
+          }
+        }else{
+          option = {
+            label:'',
+            value:value1
+          }
+          this.currentElement.setValue(option);
+        }
+        break;
+      case 'date':
+        this.props.setFieldValue(this.props.name,val);
         break;
     }    
   }

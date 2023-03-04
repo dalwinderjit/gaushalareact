@@ -139,9 +139,8 @@ export default class CowServiceDetail extends Component {
           return error;
         }
       );
-    console.log(data);
+    //console.log(data);
     if(data.status==='success'){
-        
         this.props.cowProfile.templateManager.showSuccessMessage(data.message);
         this.props.cowProfile.addCowServiceModal.setDataToForm(data.data);
         this.props.cowProfile.addCowServiceModal.show();
@@ -151,10 +150,9 @@ export default class CowServiceDetail extends Component {
   }
   formatData=(data)=>{
     for(let i=0;i<data.data.length;i++){
-      console.log(data.data[i]);
+      //console.log(data.data[i]);
       data.data[i].pregnancyStatus = this.context.pregnancy_status[data.data[i].pregnancyStatus];
       data.data[i].matingProcessType = this.context.mating_type[data.data[i].matingProcessType];
-      
     }
     return data;
   }

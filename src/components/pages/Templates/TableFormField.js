@@ -39,12 +39,5 @@ export default class TableFormField extends FormField {
       </>
     )
   }
-  loadAjaxData=async (inputValue) => {
-    if(inputValue!=""){
-      let data = await this.props.ajaxSource(inputValue);
-      this.setState({ options2: data });
-    }
-    
-  }
   
 }

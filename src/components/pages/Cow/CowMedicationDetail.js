@@ -375,7 +375,7 @@ export default class CowMedicationDetail extends Component {
     return names.join(",");
   };
   updateSelectedCow(){  //required 
-    console.log(this.formRef.current);
+
     this.formRef.current.setFieldValue('AnimalID',this.context.selectedCow.id);
     this.formRef.current.setFieldValue('AnimalNo',`${this.context.selectedCow.tagNo}`);
     this.formRef.current.setFieldValue('AnimalName',`${this.context.selectedCow.name}`);

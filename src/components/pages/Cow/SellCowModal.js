@@ -69,20 +69,29 @@ export default class SellCowModal extends Modal {
           return yup.string().required("Please Enter the Name");
         }
       }),
-      Country: yup.string().when("BuyerSellerId", (val) => {
-        if (val=== null || val=== undefined) {
-          return yup.number().required("Please Select the Country");
-        }
+      Country: yup
+        .object()
+        .shape({
+          label: yup.string(),
+          value: yup.number().required("Plsease select the Country"),
       }),
-      State: yup.string().when("BuyerSellerId", (val) => {
-        if (val=== null || val=== undefined) {
-          return yup.number().required("Please Select the State");
-        }
+      State: yup
+        .object()
+        .shape({
+          label: yup.string(),
+          value: yup.number().required("Plsease select the State"),
+        }),
+      District: yup
+        .object()
+        .shape({
+          label: yup.string(),
+          value: yup.number().required("Plsease select the District"),
       }),
-      District: yup.string().when("BuyerSellerId", (val) => {
-        if (val=== null || val=== undefined) {
-          return yup.number().required("Please Select the District");
-        }
+      Tehsil: yup
+        .object()
+        .shape({
+          label: yup.string(),
+          value: yup.number().required("Plsease select the Tehsil"),
       }),
       VillMohalla: yup.string().when("BuyerSellerId", (val) => {
         if (val=== null || val=== undefined) {
@@ -127,10 +136,12 @@ export default class SellCowModal extends Modal {
       SupervisorName:"",
       SalePurchase: "SALE",
       AnimalNo: '',
+      Remarks: '',
       Name: '',
       Country: '',
       State: '',
-      Distric: '',
+      District: '',
+      Tehsil: '',
       VillMohalla: "",
       StreetNo: "",
       HouseNo:"",
@@ -163,9 +174,10 @@ export default class SellCowModal extends Modal {
         }
         if(this.state.taskType==='Edit' || formValues.BuyerSellerId===null || formValues.BuyerSellerId===undefined || formValues.BuyerSellerId===''){
             data_.Name = formValues.Name;
-            data_.Country = formValues.Country;
-            data_.State = formValues.State;
-            data_.District = formValues.District;
+            data_.Country = formValues.Country.value;
+            data_.State = formValues.State.value;
+            data_.District = formValues.District.value;
+            data_.Tehsil = formValues.Tehsil.value;
             data_.VillMohalla = formValues.VillMohalla;
             data_.StreetNo = formValues.StreetNo;
             data_.HouseNo = formValues.HouseNo;
@@ -176,6 +188,7 @@ export default class SellCowModal extends Modal {
         if(this.state.taskType==='Edit'){
           data_.Id = formValues.Id;
         }
+        console.log(data_);
         $.each(data_, function (k, val) {
           formData.append(k, val);
         });
@@ -224,8 +237,6 @@ export default class SellCowModal extends Modal {
       },
     };
     this.formRef = React.createRef();
-    console.log("context",this.context);
-   
   }
   componentWillUnmount(){
     $("body").css("overflow", "scroll");
@@ -250,10 +261,7 @@ export default class SellCowModal extends Modal {
       return "";
     }
   }
-  
-  
   setDoctors = async (data, type = "add") => {
-    
     if (this.state.doctorMultipleSelection === true) {
       let doctors = this.formikProps.initialValues.doctors;
       if (type === "add") {
@@ -315,8 +323,6 @@ export default class SellCowModal extends Modal {
     this.formRef.current.setFieldValue('cowName',`${this.context.selectedCow.name}-${this.context.selectedCow.tagNo}`);
   }
   render() {
-    //console.log(this.context);
-    console.log('render sell cow model');
     return (
       <>
         <div
@@ -358,8 +364,6 @@ export default class SellCowModal extends Modal {
                   }) => (
                     <>
                       {/*this.setFieldValue=setFieldValue*/}
-                      
-                      
                     <Form id="cow_service_form" onSubmit={handleSubmit}>
                       <div className="row">
                         <div className="col-md-12">
@@ -393,54 +397,26 @@ export default class SellCowModal extends Modal {
                               
                               <TableFormField as="empty" name="AnimalId" label="Cow No" content={<span id="cow_service_cow_dam_tag_no">{values.cowName}</span>}
                                 error_after={<ErrorMessage name="cowID" component={TextError} />} />
-                              <TableFormField as="date" id="Date" name="Date" label="Date of Selling" value={values.Date} afterContent={<input
+                              <TableFormField as="date" id="Date" name="Date" label={`Date of Selling${values.Date}`} value={values.Date} 
+                                  afterContent={<><input
                                     type="hidden"
                                     value={this.context.selectedCow.id}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     name="cowID"
                                     id="cow_service_cow_id"
-                                  />}
+                                  />{values.Date}</>
+                                  }
+                                ref={(ref)=>{this.DateElement = ref;}}
                                 setFieldValue={setFieldValue} error_after={<ErrorMessage name="id" component={TextError}/>}
                               />
-                              {/*<tr>
-                                <td>Date of Selling</td>
-                                <td>
-                                  
-                                  <DateTimePicker
-                                    value={values.Date}
-                                    onChange={(date) => {setFieldValue('Date',date);
-                                      
-                                    }}
-                                    format="dd/MM/yyyy HH:mm:ss"
-                                  />
-                                  <br />
-                                  
-                                  <input
-                                    type="hidden"
-                                    value={this.context.selectedCow.id}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    name="cowID"
-                                    id="cow_service_cow_id"
-                                  />
-                                  <ErrorMessage name="Date" component={TextError}/>
-                                  <ErrorMessage name="id" component={TextError}/>
-                                </td>
-                                  </tr>*/}
+                              
                               <TableFormField as="input" id="Price" name="Price" label="Cow Price"/>
                               <TableFormField as="empty" id="Price" name="Price" label="Select Super visor (selling person)" 
                                 content={<><span id="">
                                     {values.SupervisorName}
                                   </span>
-                                  <input
-                                    type="hidden"
-                                    id=""
-                                    name="SupervisorId"
-                                    value={values.SupervisorId}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                  />
+                                  <input type="hidden" id="" name="SupervisorId" value={values.SupervisorId} onChange={handleChange} onBlur={handleBlur}/>
                                   <span
                                     className="fa fa-edit "
                                     id="cow_service_cow_select_supervisor"
@@ -462,20 +438,19 @@ export default class SellCowModal extends Modal {
                                 setFieldValue={setFieldValue}
                                 ajax={false}
                                 onChange={this.getSetStates}
+                                ref={(ref)=>{this.countryField = ref;}} 
+                                placeholder="Select Country"
+                                value={values.Country}
                                 /*ajaxSource={this.loadDiseases2}*/
                               />
                               </ErrorBoundary>
-                              {/*<FormField as="select" id="medication_disease_id" name="DiseaseID" label="Select Disease" options={this.context.countries} 
-                                setFieldValue={setFieldValue}
-                                ajax={true}
-                                ajaxSource={this.loadDiseases2}
-                                />*/}
                               <TableFormField as="select" id="cow_service_cow_delivery_status" name="State" label="Select State"
                                 options={this.context.states} 
                                 setFieldValue={setFieldValue}
                                 ajax={false}
                                 onChange={this.getSetDistricts}
                                 ref={(ref)=>{this.stateField = ref;}} 
+                                placeholder="Select State"
                                 /*ajaxSource={this.loadDiseases2}*/
                               />
                               <TableFormField as="select" id="District" name="District" label="Select District"
@@ -484,6 +459,7 @@ export default class SellCowModal extends Modal {
                                 ajax={false}
                                 onChange={this.getSetTehsils}
                                 ref={(ref)=>{this.districtField = ref;}} 
+                                placeholder="Select District"
                                 /*ajaxSource={this.loadDiseases2}*/
                               />
                               <TableFormField as="select" id="Tehsil" name="Tehsil" label="Select Tehsil"
@@ -491,6 +467,7 @@ export default class SellCowModal extends Modal {
                                 setFieldValue={setFieldValue}
                                 ajax={false}
                                 ref={(ref)=>{this.tehsilField = ref;}} 
+                                placeholder="Select Tehsil"
                                 /*ajaxSource={this.loadDiseases2}*/
                               />
                               <TableFormField as="input" id="VillMohalla" name="VillMohalla" label="Village/Mohalla"/>
@@ -545,13 +522,12 @@ export default class SellCowModal extends Modal {
       $('#cs_table_title').html(`Add ${this.state.animal_type} Sell Information`);
       $('#addServiceDetailModal div.modal-header>h5.modal-title').html(`Add Sell Cow Detail`);
     }else if(taskType==='Edit'){
-      console.log('Edit');
+
       $('#cs_save_update').parent().addClass('updateBtn');
       $('#cs_save_update').html("Update");
       $('#cs_table_title').html(`Update ${this.state.animal_type} Sell Information`);
       $('#addServiceDetailModal div.modal-header>h5.modal-title').html(`Update Sell ${this.state.animal_type} Detail`);
     }else{
-      console.log('Add');
       taskType = 'Add';
       $('#cs_save_update').parent().removeClass('updateBtn');
       $('#cs_save_update').html("Save");
@@ -570,7 +546,6 @@ export default class SellCowModal extends Modal {
     }
   }
   setSellCowDetail=(data)=>{
-    console.log(data);
     if(data.data.status==='success'){
       this.setState({taskType:'Edit'});
       this.setModalState('Edit');
@@ -594,7 +569,9 @@ export default class SellCowModal extends Modal {
           if(fields[data1[i][0]]!==undefined){
             let field = fields[data1[i][0]];
             if(field ==='Date'){
+              
               this.formRef.current.setFieldValue(field,new Date(Date.parse(data1[i][1])));
+              this.DateElement.setValue(new Date(Date.parse(data1[i][1])));
             }else{
               this.formRef.current.setFieldValue(field,data1[i][1]);
             }
@@ -605,6 +582,7 @@ export default class SellCowModal extends Modal {
       "country": "Country",
       "state": "State",
       "district": "District",
+      "tehsil": "Tehsil",
       "villMohalla": "VillMohalla",
       "streetNo": "StreetNo",
       "houseNo": "HouseNo",
@@ -615,7 +593,17 @@ export default class SellCowModal extends Modal {
       for(let i=0;i<data1.length;i++){
         if(fields[data1[i][0]]!==undefined){
           let field = fields[data1[i][0]];
-          this.formRef.current.setFieldValue(field,data1[i][1]);
+          if(field ==='Country'){
+            this.countryField.setValue(data1[i][1]);
+          }else if(field ==='State'){
+            this.stateField.setValue(data1[i][1]);
+          }else if(field ==='District'){
+            this.districtField.setValue(data1[i][1]);
+          }else if(field ==='Tehsil'){
+            this.tehsilField.setValue(data1[i][1]);
+          }else{
+            this.formRef.current.setFieldValue(field,data1[i][1]);
+          }
         }
       }
       this.formRef.current.setErrors({});
@@ -625,45 +613,46 @@ export default class SellCowModal extends Modal {
     }
   }
   getSetStates=async (val)=>{
-    let countryID = val.value;
-    const config = {
-      headers: {
-          Accept: '*/*',
-          //Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    };
-    let data = await axios.post(`${apiUrl}AddressState/GetAddressStateIDNamePair?CountryID=`+countryID, {},config);
-    //this.setState({states:data.data});
-    this.stateField.setState({options:data.data});
-    this.stateField.forceUpdate();
-    this.stateField.clearValue();
+    if(val!=null){
+      let countryID = val.value;
+      const config = {
+        headers: {
+            Accept: '*/*',
+            //Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      };
+      let data = await axios.post(`${apiUrl}AddressState/GetAddressStateIDNamePair?CountryID=`+countryID, {},config);
+      this.stateField.setState({options:data.data},()=>{this.stateField.setValue(this.formRef.current.values.State)});
+    }
   }
   getSetDistricts=async (val)=>{
-    let stateID = val.value;
-    const config = {
-      headers: {
-          Accept: '*/*',
-          //Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    };
-    let data = await axios.post(`${apiUrl}AddressDistrict/GetAddressDistrictIDNamePair?StateID=`+stateID, {},config);
-    //this.setState({states:data.data});
-    this.districtField.setState({options:data.data});
-    this.districtField.forceUpdate();
-    this.districtField.clearValue();
+    if(val!=null){
+      let stateID = val.value;
+      const config = {
+        headers: {
+            Accept: '*/*',
+            //Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      };
+      let data = await axios.post(`${apiUrl}AddressDistrict/GetAddressDistrictIDNamePair?StateID=`+stateID, {},config);
+      this.districtField.setState({options:data.data},()=>{if(this.districtField){this.districtField.setValue(this.formRef.current.values.District);}});
+    }
   }
   getSetTehsils=async (val)=>{
-    let districtID = val.value;
-    const config = {
-      headers: {
-          Accept: '*/*',
-          //Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    };
-    let data = await axios.post(`${apiUrl}AddressTehsil/GetAddressTehsilIDNamePair?DistrictID=`+districtID, {},config);
-    //this.setState({states:data.data});
-    this.tehsilField.setState({options:data.data});
-    this.tehsilField.clearValue();
-    this.tehsilField.forceUpdate();
+    if(val!=null){
+      let districtID = val.value;
+      const config = {
+        headers: {
+            Accept: '*/*',
+            //Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      };
+      let data = await axios.post(`${apiUrl}AddressTehsil/GetAddressTehsilIDNamePair?DistrictID=`+districtID, {},config);
+      this.tehsilField.setState({options:data.data},()=>{
+        if(this.tehsilField){
+          this.tehsilField.setValue(this.formRef.current.values.Tehsil);
+        }
+      });
+    }
   }
 }

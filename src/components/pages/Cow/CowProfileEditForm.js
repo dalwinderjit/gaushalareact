@@ -581,14 +581,12 @@ export default class CowProfileEditForm extends Component {
   getSellCowDetail=async ()=>{
     try{
       let status = await this.props.cowProfile.sellCowModal.getSellCowDetail();
-      console.log(status);
       if(status===true){
         this.props.cowProfile.sellCowModal.show();
       }
     }catch( ex){
       console.log('Exception',ex)
     }
-    
   }
   setSellCow=(type=true)=>{
     this.formikref.setFieldValue('sold',type);
