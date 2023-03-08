@@ -23,9 +23,16 @@ export default class FormField extends Component {
   }
   constructor(props) {
     super(props)
+    /*let fetchOnEmptyInput = false;
+    if(!props.fetchOnEmptyInput){
+      fetchOnEmptyInput = false;
+    }else{
+      fetchOnEmptyInput = true;
+    }*/
     this.state = {
       options:props.options,
-      options2:props.options
+      options2:props.options,
+      fetchOnEmpty:props.fetchOnEmptyInput
     }
   }
   getContent=()=>{
@@ -97,7 +104,7 @@ export default class FormField extends Component {
     )
   }
   loadAjaxData=async (inputValue) => {
-    if(inputValue!=""){
+    if(inputValue!="" || this.state.fetchOnEmpty===true){
       let data = await this.props.ajaxSource(inputValue);
       this.setState({ options: data });
     }
@@ -133,7 +140,6 @@ export default class FormField extends Component {
     console.log(val);
     switch(this.props.as){
       case 'select':
-        console.log('select')
         let value1 = null;
         if(val instanceof Object === true){
             value1 = parseInt(val.value);
@@ -141,7 +147,6 @@ export default class FormField extends Component {
           value1 = val;
         }
         let option = {label:'Select One',value:''};
-        console.log(this.state.options);
         let options2 = Object.entries(this.state.options);
         if(options2.length>0){
           for (let i = 0; i < options2.length; i++) {

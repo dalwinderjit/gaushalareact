@@ -220,6 +220,7 @@ export default class CowMedicationDetail extends Component {
                             placeholder="Select Disease"
                             ref={(ref)=>{this.diseaseField = ref;}}
                             value={values.DiseaseID}
+                            fetchOnEmptyInput={true} 
                           />
                           <FormField as="input" id="medication_symptoms" name="Symptoms" label="Symptoms"/>
                           <FormField as="input" id="medication_diagnosis" name="Diagnosis" label="Diagnosis"/>
@@ -564,7 +565,7 @@ export default class CowMedicationDetail extends Component {
     //this.setState({ diseaseOptions: new_data });
   }
   getSetDiseases=async (val)=>{
-    console.log("GEt Set Disease");
+    //console.log("GEt Set Disease");
     if(val!=null){
       let countryID = val.value;
       const config = {
@@ -574,33 +575,22 @@ export default class CowMedicationDetail extends Component {
         }
       };
       let data1 = new FormData();
-      data1.append("Ids", [val.value]);
+      let ids = null;
+      if(val instanceof Object === true){
+        ids = [val.value];
+      }else{
+        ids = [val];
+      }
+      data1.append("Ids", ids);
       data1.append("PageNo", 1);
       data1.append("RecordsPerPage", 10);
       //let data = await axios.post(`${apiUrl}Disease/GetDiseaseIdNamePairByDiseaseName?DiseaseName=`+countryID+``, {},config);
       let data = await axios.post(`${apiUrl}Disease/GetDiseaseIdNamePairByDiseaseName`, data1,config);
-      console.log(data);
       if(this.diseaseField){
-        console.log("Disea field set in getsetdisea");
-        debugger;
-        this.diseaseField.setState({options:data.data},()=>{
-            console.log("Inside call back");
-            debugger;
-            console.log(this);
-            if(this.diseaseField){
-              debugger;
-              console.log(this.formRef.current.values.DiseaseID);
-              this.diseaseField.setValue(this.formRef.current.values.DiseaseID)
-            }else{
-              debugger;
-            }
-          }
-        );
-        debugger;
-        console.log("Settign value again")
-        this.diseaseField.setValue(val);
+        let a = this.diseaseField;
+        this.diseaseField.setState({options:data.data},()=>{a.setValue(val);});
       }else{
-        console.log("Disease Field not set");
+        //console.log("Disease Field not set");
       }
     }
   }
