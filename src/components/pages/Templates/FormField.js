@@ -16,7 +16,7 @@ export default class FormField extends Component {
     className: 'form-control kg-input'
   };
   selectElement ={
-    className : ''
+    className : 'col-md-8'
   }
   dateElement ={
     className : 'form-control kg-input'
@@ -35,6 +35,7 @@ export default class FormField extends Component {
         options={this.getSelectOptions()}
         value={this.props.value}
         autoSize={true}
+        width={'100%'}
         className={this.selectElement.className}
         onChange={(val) => { this.props.setFieldValue(this.props.name, val);if(this.props.onChange){this.props.onChange(val)};}}
         onInputChange = {(val)=>{if(this.props.ajax===true){;this.loadAjaxData(val)}else{this.getSelectOptions()}}}
@@ -64,8 +65,6 @@ export default class FormField extends Component {
           name={this.props.name}
           value={this.props.value}
           onChange={(val) => {
-            console.log('onchage date called');
-            console.log(val);
             this.setState({value:val});
             this.props.setFieldValue(this.props.name, val);
           }}
@@ -100,7 +99,7 @@ export default class FormField extends Component {
   loadAjaxData=async (inputValue) => {
     if(inputValue!=""){
       let data = await this.props.ajaxSource(inputValue);
-      this.setState({ options2: data });
+      this.setState({ options: data });
     }
   }
   getSelectOptions = () => {
@@ -120,7 +119,6 @@ export default class FormField extends Component {
           value: items[0][1]
         })
       }
-      
       return options;
   }
   clearValue=()=>{
@@ -132,8 +130,10 @@ export default class FormField extends Component {
     }    
   }
   setValue=(val)=>{
+    console.log(val);
     switch(this.props.as){
       case 'select':
+        console.log('select')
         let value1 = null;
         if(val instanceof Object === true){
             value1 = parseInt(val.value);

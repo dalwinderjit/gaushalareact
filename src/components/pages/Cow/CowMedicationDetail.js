@@ -9,6 +9,7 @@ import CowContext from "../../../context/CowContext";
 import $ from "jquery";
 import Table from "../../Table";
 import FormField from "../Templates/FormField";
+import axios from "axios";
 
 export default class CowMedicationDetail extends Component {
   static contextType = CowContext;
@@ -20,17 +21,18 @@ export default class CowMedicationDetail extends Component {
       data:[],
       diseaseOptions:[]
     };
-    this.propnosis_options = [
+    /*this.propnosis_options = [
       { value: 1, label: "Poor" },
       { value: 2, label: "Good" },
-    ];
+    ];*/
+    this.prognosis_options = { 1: "Poor", 2: "Good"};
     this.medicationValidation = yup.object().shape({
       Id: yup.number().when([], () => {
         if (this.state.taskType === "Edit") {
           return yup
             .number()
-            .typeError("Invalid cow Service ID")
-            .required("Please select the Cow Service again");
+            .typeError("Invalid cow Medication ID")
+            .required("Please select the Cow Medication again");
         }
       }),
       Date: yup
@@ -215,13 +217,16 @@ export default class CowMedicationDetail extends Component {
                             setFieldValue={setFieldValue}
                             ajax={true}
                             ajaxSource={this.loadDiseases2}
+                            placeholder="Select Disease"
+                            ref={(ref)=>{this.diseaseField = ref;}}
                           />
                           <FormField as="input" id="medication_symptoms" name="Symptoms" label="Symptoms"/>
                           <FormField as="input" id="medication_diagnosis" name="Diagnosis" label="Diagnosis"/>
                           <FormField as="input" id="medication_treatment" name="Treatment" label="Treatment"/>
                           <FormField as="select" id="inputGroupSelect01" name="Prognosis" label="Prognosis" 
-                            options={this.propnosis_options} 
+                            options={this.prognosis_options} 
                             setFieldValue={setFieldValue}
+                            placeholder="Select Prognosis"
                           />
                           <FormField as="input" id="medication_result" name="Result" label="Result"/>
                           <FormField as="input" id="medication_cost_of_treatment" name="CostOfTreatment2" label="Cost of Treatment"/>
@@ -422,13 +427,16 @@ export default class CowMedicationDetail extends Component {
     this.formRef.current.setFieldValue('Id',medication.id);
     this.formRef.current.setFieldValue('Date',new Date(Date.parse(medication.date)));
     this.formRef.current.setFieldValue('AnimalID',medication.animalID);
+    //this.diseaseField.setValue(medication.diseaseID);
+    console.log(this.diseaseField);
+    this.diseaseField.setValue(1);
     this.formRef.current.setFieldValue('Disease',medication.disease);
     this.formRef.current.setFieldValue('Symptoms',medication.symptoms);
     this.formRef.current.setFieldValue('Diagnosis',medication.diagnosis);
     this.formRef.current.setFieldValue('Treatment',medication.treatment);
-    for(let i=0;i<this.propnosis_options.length;i++){
-      if(this.propnosis_options[i].value == medication.prognosis){
-        this.formRef.current.setFieldValue('Prognosis',this.propnosis_options[i]);
+    for(let i=0;i<this.prognosis_options.length;i++){
+      if(this.prognosis_options[i].value == medication.prognosis){
+        this.formRef.current.setFieldValue('Prognosis',this.prognosis_options[i]);
       }
     }
     this.formRef.current.setFieldValue('Result',medication.result);
@@ -460,8 +468,8 @@ export default class CowMedicationDetail extends Component {
   }
   format_data=(data)=>{
     let prognosis = {};
-    for(let i=0;i<this.propnosis_options.length;i++){
-      prognosis[this.propnosis_options[i].value] = this.propnosis_options[i].label;
+    for(let i=0;i<this.prognosis_options.length;i++){
+      prognosis[this.prognosis_options[i].value] = this.prognosis_options[i].label;
     }
     for(let i=0;i<data.data.length;i++){
       if(prognosis[data.data[i].Prognosis]!==undefined){
@@ -524,6 +532,7 @@ export default class CowMedicationDetail extends Component {
           return error;
         }
       );
+    return response;
     var data_ = Object.entries(response);
     let new_data = [];
     for (let i = 0; i < data_.length; i++) {
@@ -534,5 +543,24 @@ export default class CowMedicationDetail extends Component {
     }
     return new_data;
     //this.setState({ diseaseOptions: new_data });
+  }
+  getSetDiseases=async (val)=>{
+    if(val!=null){
+      let countryID = val.value;
+      const config = {
+        headers: {
+            Accept: '*/*',
+            //Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      };
+      let data1 = new FormData();
+      data1.append("Ids", [val.value]);
+      data1.append("PageNo", 1);
+      data1.append("RecordsPerPage", 10);
+      //let data = await axios.post(`${apiUrl}Disease/GetDiseaseIdNamePairByDiseaseName?DiseaseName=`+countryID+``, {},config);
+      let data = await axios.post(`${apiUrl}Disease/GetDiseaseIdNamePairByDiseaseName`, data1,config);
+      console.log(data);
+      this.diseaseField.setState({options:data.data},()=>{this.diseaseField.setValue(this.formRef.current.values.DiseaseID)});
+    }
   }
 }
