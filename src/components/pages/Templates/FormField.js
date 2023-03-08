@@ -141,6 +141,7 @@ export default class FormField extends Component {
           value1 = val;
         }
         let option = {label:'Select One',value:''};
+        console.log(this.state.options);
         let options2 = Object.entries(this.state.options);
         if(options2.length>0){
           for (let i = 0; i < options2.length; i++) {
@@ -156,9 +157,13 @@ export default class FormField extends Component {
             this.currentElement.setValue(option);
           }
         }else{
-          option = {
-            label:'',
-            value:value1
+          if(val instanceof Object === true){
+            option = val;
+          }else{
+            option = {
+              label:'',
+              value:value1
+            }
           }
           this.currentElement.setValue(option);
         }

@@ -219,6 +219,7 @@ export default class CowMedicationDetail extends Component {
                             ajaxSource={this.loadDiseases2}
                             placeholder="Select Disease"
                             ref={(ref)=>{this.diseaseField = ref;}}
+                            value={values.DiseaseID}
                           />
                           <FormField as="input" id="medication_symptoms" name="Symptoms" label="Symptoms"/>
                           <FormField as="input" id="medication_diagnosis" name="Diagnosis" label="Diagnosis"/>
@@ -227,6 +228,7 @@ export default class CowMedicationDetail extends Component {
                             options={this.prognosis_options} 
                             setFieldValue={setFieldValue}
                             placeholder="Select Prognosis"
+                            ref={(ref)=>{this.prognosis_field = ref;}}
                           />
                           <FormField as="input" id="medication_result" name="Result" label="Result"/>
                           <FormField as="input" id="medication_cost_of_treatment" name="CostOfTreatment2" label="Cost of Treatment"/>
@@ -423,22 +425,39 @@ export default class CowMedicationDetail extends Component {
       ></span>
     );
   };
-  setDataToForm=(medication)=>{
+  setDataToForm= async (medication)=>{
     this.formRef.current.setFieldValue('Id',medication.id);
     this.formRef.current.setFieldValue('Date',new Date(Date.parse(medication.date)));
     this.formRef.current.setFieldValue('AnimalID',medication.animalID);
     //this.diseaseField.setValue(medication.diseaseID);
+    //fetchSetTheDiseaseOptions by Disease ID
     console.log(this.diseaseField);
-    this.diseaseField.setValue(1);
+    console.log("Fetching Diseases for ")
+    let diseases = await this.getSetDiseases(medication.diseaseID);
+    console.log(diseases)
+    //this.diseaseField.setState({options:data});
+    //fetch the diseases over here
+    //this.diseaseField.setValue({label:''+medication.disease,value:medication.diseaseID});
+    //this.diseaseField.setValue(medication.diseaseID);
     this.formRef.current.setFieldValue('Disease',medication.disease);
     this.formRef.current.setFieldValue('Symptoms',medication.symptoms);
     this.formRef.current.setFieldValue('Diagnosis',medication.diagnosis);
     this.formRef.current.setFieldValue('Treatment',medication.treatment);
-    for(let i=0;i<this.prognosis_options.length;i++){
-      if(this.prognosis_options[i].value == medication.prognosis){
-        this.formRef.current.setFieldValue('Prognosis',this.prognosis_options[i]);
+    console.log("Settign pRognios");
+    console.log(this.prognosis_options);
+    let option = null;
+    if(medication.prognosis){
+      if(this.prognosis_options[medication.prognosis]){
+        option = {label : this.prognosis_options[medication.prognosis],value:medication.prognosis};
+      }else{
+        option = {label : 'Not Found',value:medication.prognosis};
       }
+    }else{
+      option = {label : 'Select One',value:''};
     }
+    console.log(option);
+    this.prognosis_field.setValue(option);
+    this.formRef.current.setFieldValue('Prognosis',option);
     this.formRef.current.setFieldValue('Result',medication.result);
     this.formRef.current.setFieldValue('CostOfTreatment2',medication.costOfTreatment2);
     this.formRef.current.setFieldValue('Remarks',medication.remarks);
@@ -545,12 +564,13 @@ export default class CowMedicationDetail extends Component {
     //this.setState({ diseaseOptions: new_data });
   }
   getSetDiseases=async (val)=>{
+    console.log("GEt Set Disease");
     if(val!=null){
       let countryID = val.value;
       const config = {
         headers: {
             Accept: '*/*',
-            //Authorization: `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       };
       let data1 = new FormData();
@@ -560,7 +580,28 @@ export default class CowMedicationDetail extends Component {
       //let data = await axios.post(`${apiUrl}Disease/GetDiseaseIdNamePairByDiseaseName?DiseaseName=`+countryID+``, {},config);
       let data = await axios.post(`${apiUrl}Disease/GetDiseaseIdNamePairByDiseaseName`, data1,config);
       console.log(data);
-      this.diseaseField.setState({options:data.data},()=>{this.diseaseField.setValue(this.formRef.current.values.DiseaseID)});
+      if(this.diseaseField){
+        console.log("Disea field set in getsetdisea");
+        debugger;
+        this.diseaseField.setState({options:data.data},()=>{
+            console.log("Inside call back");
+            debugger;
+            console.log(this);
+            if(this.diseaseField){
+              debugger;
+              console.log(this.formRef.current.values.DiseaseID);
+              this.diseaseField.setValue(this.formRef.current.values.DiseaseID)
+            }else{
+              debugger;
+            }
+          }
+        );
+        debugger;
+        console.log("Settign value again")
+        this.diseaseField.setValue(val);
+      }else{
+        console.log("Disease Field not set");
+      }
     }
   }
 }
