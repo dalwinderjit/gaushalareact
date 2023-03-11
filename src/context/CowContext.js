@@ -5,7 +5,6 @@ import { apiUrl } from "./AppContext";
 const CowContext = createContext();
 export class CowProvider extends Component {
   constructor(props) {
-    //console.log("Cow COntext created");
     super(props);
     this.state = {
       cowID: "",
@@ -202,16 +201,7 @@ export class CowProvider extends Component {
     }
     return data;
   }
-  setDataForCowProfileBeforeMounted= async()=>{
-    let data = await this.getDataForCowProfilePage();
-    if(data){
-      console.log(data);
-      this.state.counties = data.countries;
-      this.state.breeds = data.breeds;
-      console.log(this.state);
-    }
-    return data;
-  }
+  
   initializeData = async()=>{
     let data = this.setDataForCowProfile();
   }

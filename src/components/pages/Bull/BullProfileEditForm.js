@@ -398,7 +398,7 @@ export default class BullProfileEditForm extends Component {
                       <tr><td>Dam Name</td><td><span id="bull_edit_bull_dam_name">{values.damName}</span></td></tr>
                       <tr><td>Dam's Bly</td><td><span id="bull_edit_bull_dam_bly">{this.state.bull.damBLY}</span></td></tr>
                       <tr><td>Sire's DBLY</td><td><span id="bull_edit_bull_sire_dam_bly">{this.state.bull.sireDBLY}</span></td></tr>
-                      <tr><td>Bull Sold</td><td>{values.sold===false?<button onClick={this.showSellBullModal} className="btn btn-success btn-sm">Sell Bull</button>:<button onClick={this.getSellBullDetail} className="btn btn-success btn-sm">Edit Sell Bull Detail</button>}  <input type="checkbox" checked={values.sold}/></td></tr>
+                      <tr><td>Bull Sold</td><td>{values.sold===false?<button onClick={this.showSellBullModal} className="btn btn-success btn-sm">Sell Bull</button>:<button onClick={this.getSellBullDetail} className="btn btn-success btn-sm">Edit Sell Bull Detail</button>}  <input type="checkbox" defaultChecked={values.sold}/></td></tr>
                       <tr><td>Bull Performance {values.performance}- {values.performance}</td>
                         <td>
                           <select className="kgsdropdown cpinput-disabled" id="bull_edit_bull_performance" name="performance" disabled value={values.performance} onChange={handleChange} onBlur={handleBlur}>

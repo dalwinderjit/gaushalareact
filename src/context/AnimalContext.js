@@ -1,18 +1,19 @@
 import { Component, createContext } from "react";
-
+import axios from "axios";
+import { apiUrl } from "./AppContext";
 const AnimalContext = createContext();
 export class AnimalProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      heiferID: "",
+      animalID: "",
       tagNo: "SW-719",
       selectedAnimal:{
         id:'',
         tagNo:"",
         name:''
       },
-      heifer: {
+      animal: {
         id: 1,
         tagNo: "SW-101",
         name: "",
@@ -37,7 +38,7 @@ export class AnimalProvider extends Component {
         milkingStatus: false,
         remarks: "",
         additionalInfo: "",
-        picture: "heifer_default.jpg",
+        picture: "animal_default.jpg",
         lactation: 0,
         type: "",
         weight: "",
@@ -45,7 +46,7 @@ export class AnimalProvider extends Component {
         semenDoses: "",
         noOfTeatsWorking: "",
         location: "",
-        heiferDataSet: false,
+        animalDataSet: false,
       },
       breeds: {
         1: "Sahiwal",
@@ -136,15 +137,15 @@ export class AnimalProvider extends Component {
     };
   }
   render() {
-    //const {heifer,tagNo} = this.state;
-    const { heiferID, breeds, colors,pregnancy_status,mating_type,delivery_status,gender ,selectedAnimal,
+    //const {animal,tagNo} = this.state;
+    const { animalID, breeds, colors,pregnancy_status,mating_type,delivery_status,gender ,selectedAnimal,
       locations,milkStatus,birthStatus,countries,states,districts,vaccinations,diseases} = this.state;
     const { convertDateTo1 } = this;
-    //console.log(heifer);
+    //console.log(animal);
     return (
       <AnimalContext.Provider
         value={{
-          heiferID,
+          animalID,
           selectedAnimal,
           breeds,
           colors,
@@ -166,6 +167,51 @@ export class AnimalProvider extends Component {
         {this.props.children}
       </AnimalContext.Provider>
     );
+  }
+  getDataForAnimalProfilePage= async()=>{
+    const config = {
+      headers: {
+          Accept: '*/*',
+          //Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+    let data = await axios.post(`${apiUrl}Animals/GetDataForAnimalProfilePage/`, config);
+    //this.setState({ employees: data.data.data });
+    return data;
+  }
+  setDataForAnimalProfile= async()=>{
+    let data = await this.getDataForAnimalProfilePage();
+    if(data){
+      this.setState(
+        {
+          gender:data.data.Gender,
+          countries:data.data.countries,
+          breeds:data.data.breeds,
+          colors:data.data.colors,
+          pregnancy_status:data.data.pregnancyStatus2,
+          mating_type:data.data.matingType,
+          delivery_status:data.data.deliveryType,
+          locations:data.data.animalLocations,
+          milkStatus:data.data.milkStatus,
+          birthStatus:data.data.birthStatus
+        }
+      );
+      //console.log(this.state);
+    }
+    return data;
+  }
+  setDataForAnimalProfileBeforeMounted= async()=>{
+    let data = await this.getDataForAnimalProfilePage();
+    if(data){
+      console.log(data);
+      this.state.counties = data.countries;
+      this.state.breeds = data.breeds;
+      console.log(this.state);
+    }
+    return data;
+  }
+  initializeData = async()=>{
+    let data = this.setDataForAnimalProfile();
   }
 }
 

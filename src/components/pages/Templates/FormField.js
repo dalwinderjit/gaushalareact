@@ -82,6 +82,7 @@ export default class FormField extends Component {
   }
   render() {
     return (
+      <ErrorBoundary>
       <div className="input-group mb-3">
         {this.props.before_label}
         <label
@@ -101,6 +102,7 @@ export default class FormField extends Component {
         />
         {this.error_after}
       </div>
+      </ErrorBoundary>
     )
   }
   loadAjaxData=async (inputValue) => {
