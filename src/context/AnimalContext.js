@@ -140,7 +140,7 @@ export class AnimalProvider extends Component {
     //const {animal,tagNo} = this.state;
     const { animalID, breeds, colors,pregnancy_status,mating_type,delivery_status,gender ,selectedAnimal,
       locations,milkStatus,birthStatus,countries,states,districts,vaccinations,diseases} = this.state;
-    const { convertDateTo1 } = this;
+    const { convertDateTo1,getSelectedAnimalID,getSelectedAnimalName, getSelectedAnimalTagNo, getSelectedAnimal } = this;
     //console.log(animal);
     return (
       <AnimalContext.Provider
@@ -162,6 +162,7 @@ export class AnimalProvider extends Component {
           vaccinations,
           diseases,
           convertDateTo1,
+          getSelectedAnimalID,getSelectedAnimalName, getSelectedAnimalTagNo, getSelectedAnimal
         }}
       >
         {this.props.children}
@@ -212,6 +213,18 @@ export class AnimalProvider extends Component {
   }
   initializeData = async()=>{
     let data = this.setDataForAnimalProfile();
+  }
+  getSelectedAnimalID=()=>{
+    return this.state.selectedAnimal.id;
+  }
+  getSelectedAnimalTagNo=()=>{
+    return this.state.selectedAnimal.tagNo;
+  }
+  getSelectedAnimalName=()=>{
+    return this.state.selectedAnimal.name;
+  }
+  getSelectedAnimal=()=>{
+    return this.state.selectedAnimal;
   }
 }
 

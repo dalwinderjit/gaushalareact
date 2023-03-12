@@ -240,7 +240,7 @@ export default class CowProfileEditForm extends Component {
 
       this.context.addCowServiceModal.updateSelectedCow();
       this.context.addCowMilkingStartStopDetail.updateSelectedCow();
-      this.props.cowProfile.medicationDetail.updateSelectedCow();
+      this.props.cowProfile.medicationDetail.updateSelectedAnimal();
       
       data = await this.formatCowData(data);
       await this.setState({milkingStatus:data.data.milkingStatus});
@@ -423,7 +423,7 @@ export default class CowProfileEditForm extends Component {
                         </td>
                       </tr>
                       <tr><td>Fat</td><td><input type="text" className="cpinput-disabled" value={values.butterFat} disabled id="cow_edit_cow_butter_fat" name="butterFat" onChange={handleChange} onBlur={handleBlur} />{this.error(errors.butterFat, errors.touched)}</td></tr>
-                      <tr><td>Cow Sold</td><td>{values.sold===false?<button type="button" onClick={this.showSellCowModal} className="btn btn-success btn-sm">Sell Cow</button>:<button type="button" onClick={this.getSellCowDetail} className="btn btn-success btn-sm">Edit Sell Cow</button>} <input type="checkbox" defaultChecked={values.sold} id="cow_sold" name="cow_sold"/></td></tr>
+                      <tr><td>Cow Sold</td><td>{values.sold===false?<button type="button" onClick={this.showSellCowModal} className="btn btn-success btn-sm">Sell Cow</button>:<button type="button" onClick={this.getSellCowDetail} className="btn btn-success btn-sm">Edit Sell Cow</button>} <input type="checkbox" defaultChecked={values.sold} checked={values.sold} id="sold" name="sold"/></td></tr>
                       <tr><td>Cow Location</td>
                         <td>
                           <select className="kgsdropdown cpinput-disabled" id="cow_edit_cow_location" name="location" disabled value={values.location} onChange={handleChange} onBlur={handleBlur}>
@@ -580,7 +580,7 @@ export default class CowProfileEditForm extends Component {
   }
   getSellCowDetail=async ()=>{
     try{
-      let status = await this.props.cowProfile.sellCowModal.getSellCowDetail();
+      let status = await this.props.cowProfile.sellCowModal.getSellAnimalDetail();
       if(status===true){
         this.props.cowProfile.sellCowModal.show();
       }

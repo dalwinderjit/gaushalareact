@@ -16,10 +16,12 @@ import AddCowMilkingStartStopDetail from "./AddCowMilkingStartStopDetail";
 import CowComparisonChart from "./CowComparisonChart";
 import CowMedicationDetail from "./CowMedicationDetail";
 import CowSummary from "./CowSummary";
-import SellCowModal from "./SellCowModal";
+//import SellCowModal from "./SellCowModal";
 import ErrorBoundary from "../Templates/ErrorBoundary";
 import axios from "axios";
 import { apiUrl } from "../../../context/AppContext";
+import AnimalMedicationDetail from "../Medication/AnimalMedicationDetail";
+import SellAnimalModal from "../SellAnimal/SellAnimalModal";
 //const Footer = React.lazy(()=>{import("../../Footer")});
 
 export default class CowProfile extends Component {
@@ -41,7 +43,7 @@ export default class CowProfile extends Component {
     this.milkingChart.tableMilkStartStopDetail.loadData();
     this.medicationDetail.table.loadData();
     this.sellCowModal.resetSellForm();
-    this.sellCowModal.updateSelectedCow();
+    this.sellCowModal.updateSelectedAnimal();
   };
   componentDidMount(props) {
     this.search.cowEditForm = this.cowEditForm;
@@ -106,13 +108,8 @@ export default class CowProfile extends Component {
                   cowProfile={this}
                 />
                 <CowComparisonChart />
-                <CowMedicationDetail
-                  cowProfile={this}
-                  ref={(ref) => {
-                    this.medicationDetail = ref;
-                  }}
-                  templateManager={data.templateManager}
-                />
+                <AnimalMedicationDetail animalProfile={this} ref={(ref)=>{this.medicationDetail = ref;}} templateManager={data.templateManager} animalType={'Cow'}/>
+                {/*<CowMedicationDetail cowProfile={this} ref={(ref) => {this.medicationDetail = ref;}}templateManager={data.templateManager}/>*/}
                 <CowSummary
                   ref={(ref) => {
                     this.cowSummary = ref;
@@ -172,11 +169,19 @@ export default class CowProfile extends Component {
                 cowProfile={this}
                 templateManager={data.templateManager}
               />
-              <SellCowModal
+              <SellAnimalModal
+                ref={(ref)=>{this.sellCowModal = ref;}} 
+                animalProfile={this}
+                templateManager={data.templateManager}
+                sellApi={{1:'Cows',2:'SellCow'}}
+                getSellDetailApi= {'Cows/GetSellCowDetailByCowId?cow_id='}
+                animalType = 'Cow'
+                />
+              {/*<SellCowModal
                 ref={(ref)=>{this.sellCowModal = ref;}} 
                 cowProfile={this}
                 templateManager={data.templateManager}
-              />
+              />*/}
             </>
           );
         }}
@@ -189,6 +194,8 @@ export default class CowProfile extends Component {
   setDataForCowProfile= async()=>{
     this.context.initializeData();
   }
-  
+  setSellAnimal=(status)=>{
+    this.cowEditForm.setSellCow(status);
+  }  
 }
 CowProfile.contextType = CowContext;

@@ -97,15 +97,16 @@ export class BullProvider extends Component {
       },
       states:{
         1: "PUNJAB",
-        2: "UP",
-        2: "RAJASTHAN",
-        2: "GUJRAT",
+        2: "UP"
       },
       districts:{
         1: "JALANDHAR",
         2: "AMRITSAR",
         3: "BATHINDA",
         4: "FARIDKOT"
+      },
+      tehsils:{
+
       },
       imageUrl: "http://localhost:4000/images/",
       calvingDetail: {
@@ -142,9 +143,10 @@ export class BullProvider extends Component {
       performances,
       countries,
       states,
-      districts
+      districts,
+      tehsils
     } = this.state;
-    const { convertDateTo1 } = this;
+    const { convertDateTo1,getSelectedAnimalID,getSelectedAnimalName, getSelectedAnimalTagNo, getSelectedAnimal } = this;
     //console.log(bull);
     return (
       <BullContext.Provider
@@ -164,12 +166,26 @@ export class BullProvider extends Component {
           countries,
           states,
           districts,
+          tehsils,
           convertDateTo1,
+          getSelectedAnimalID,getSelectedAnimalName, getSelectedAnimalTagNo, getSelectedAnimal
         }}
       >
         {this.props.children}
       </BullContext.Provider>
     );
+  }
+  getSelectedAnimalID=()=>{
+    return this.state.selectedBull.id;
+  }
+  getSelectedAnimalTagNo=()=>{
+    return this.state.selectedBull.tagNo;
+  }
+  getSelectedAnimalName=()=>{
+    return this.state.selectedBull.name;
+  }
+  getSelectedAnimal=()=>{
+    return this.state.selectedBull;
   }
 }
 

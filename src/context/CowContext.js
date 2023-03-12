@@ -139,7 +139,7 @@ export class CowProvider extends Component {
   render() {
     const { cowID, breeds, colors,pregnancy_status,mating_type,delivery_status,gender ,selectedCow,
       locations,milkStatus,birthStatus,countries,states,districts,tehsils} = this.state;
-    const { convertDateTo1,setCountries,initializeData } = this;
+    const { convertDateTo1,setCountries,initializeData,getSelectedAnimalID,getSelectedAnimalName, getSelectedAnimalTagNo, getSelectedAnimal } = this;
     //console.log(cow);
     return (
       <CowContext.Provider
@@ -161,7 +161,8 @@ export class CowProvider extends Component {
           tehsils,
           convertDateTo1,
           setCountries,
-          initializeData
+          initializeData,
+          getSelectedAnimalID,getSelectedAnimalName, getSelectedAnimalTagNo, getSelectedAnimal
         }}
       >
         {this.props.children}
@@ -204,6 +205,18 @@ export class CowProvider extends Component {
   
   initializeData = async()=>{
     let data = this.setDataForCowProfile();
+  }
+  getSelectedAnimalID=()=>{
+    return this.state.selectedCow.id;
+  }
+  getSelectedAnimalTagNo=()=>{
+    return this.state.selectedCow.tagNo;
+  }
+  getSelectedAnimalName=()=>{
+    return this.state.selectedCow.name;
+  }
+  getSelectedAnimal=()=>{
+    return this.state.selectedCow;
   }
 }
 

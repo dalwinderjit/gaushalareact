@@ -9,8 +9,9 @@ import BullContext from "../../../context/BullContext";
 import $ from "jquery";
 import Table from "../../Table";
 import FormField from "../Templates/FormField";
+import AnimalMedicationDetail from "../Medication/AnimalMedicationDetail";
 
-export default class BullMedicationDetail extends Component {
+export default class BullMedicationDetail extends AnimalMedicationDetail {
   static contextType = BullContext;
   constructor(props) {
     super(props);
@@ -20,10 +21,11 @@ export default class BullMedicationDetail extends Component {
       data:[],
       diseaseOptions:[]
     };
-    this.propnosis_options = [
+    /*this.prognosis_options = [
       { value: 1, label: "Poor" },
       { value: 2, label: "Good" },
-    ];
+    ];*/
+    this.prognosis_options = { 1: "Poor", 2: "Good"};
     this.medicationValidation = yup.object().shape({
       Id: yup.number().when([], () => {
         if (this.state.taskType === "Edit") {
@@ -216,13 +218,19 @@ export default class BullMedicationDetail extends Component {
                             setFieldValue={setFieldValue}
                             ajax={true}
                             ajaxSource={this.loadDiseases2}
+                            placeholder="Select Disease"
+                            ref={(ref)=>{this.diseaseField = ref;}}
+                            value={values.DiseaseID}
+                            fetchOnEmptyInput={true} 
                           />
                           <FormField as="input" id="medication_symptoms" name="Symptoms" label="Symptoms"/>
                           <FormField as="input" id="medication_diagnosis" name="Diagnosis" label="Diagnosis"/>
                           <FormField as="input" id="medication_treatment" name="Treatment" label="Treatment"/>
                           <FormField as="select" id="inputGroupSelect01" name="Prognosis" label="Prognosis" 
-                            options={this.propnosis_options} 
+                            options={this.prognosis_options} 
                             setFieldValue={setFieldValue}
+                            placeholder="Select Prognosis"
+                            ref={(ref)=>{this.prognosis_field = ref;}}
                           />
                           <FormField as="input" id="medication_result" name="Result" label="Result"/>
                           <FormField as="input" id="medication_cost_of_treatment" name="CostOfTreatment2" label="Cost of Treatment"/>
@@ -420,19 +428,39 @@ export default class BullMedicationDetail extends Component {
       ></span>
     );
   };
-  setDataToForm=(medication)=>{
+  setDataToForm=async (medication)=>{
     this.formRef.current.setFieldValue('Id',medication.id);
     this.formRef.current.setFieldValue('Date',new Date(Date.parse(medication.date)));
     this.formRef.current.setFieldValue('AnimalID',medication.animalID);
+    console.log(this.diseaseField);
+    console.log("Fetching Diseases for ")
+    let diseases = await this.getSetDiseases(medication.diseaseID);
+    console.log(diseases)
     this.formRef.current.setFieldValue('Disease',medication.disease);
     this.formRef.current.setFieldValue('Symptoms',medication.symptoms);
     this.formRef.current.setFieldValue('Diagnosis',medication.diagnosis);
     this.formRef.current.setFieldValue('Treatment',medication.treatment);
-    for(let i=0;i<this.propnosis_options.length;i++){
-      if(this.propnosis_options[i].value == medication.prognosis){
-        this.formRef.current.setFieldValue('Prognosis',this.propnosis_options[i]);
+    console.log("Settign pRognios");
+    console.log(this.prognosis_options);
+    let option = null;
+    if(medication.prognosis){
+      if(this.prognosis_options[medication.prognosis]){
+        option = {label : this.prognosis_options[medication.prognosis],value:medication.prognosis};
+      }else{
+        option = {label : 'Not Found',value:medication.prognosis};
       }
+    }else{
+      option = {label : 'Select One',value:''};
     }
+    console.log(option);
+    this.prognosis_field.setValue(option);
+    this.formRef.current.setFieldValue('Prognosis',option);
+    /*
+    for(let i=0;i<this.prognosis_options.length;i++){
+      if(this.prognosis_options[i].value == medication.prognosis){
+        this.formRef.current.setFieldValue('Prognosis',this.prognosis_options[i]);
+      }
+    }*/
     this.formRef.current.setFieldValue('Result',medication.result);
     this.formRef.current.setFieldValue('CostOfTreatment2',medication.costOfTreatment2);
     this.formRef.current.setFieldValue('Remarks',medication.remarks);
@@ -462,8 +490,8 @@ export default class BullMedicationDetail extends Component {
   }
   format_data=(data)=>{
     let prognosis = {};
-    for(let i=0;i<this.propnosis_options.length;i++){
-      prognosis[this.propnosis_options[i].value] = this.propnosis_options[i].label;
+    for(let i=0;i<this.prognosis_options.length;i++){
+      prognosis[this.prognosis_options[i].value] = this.prognosis_options[i].label;
     }
     for(let i=0;i<data.data.length;i++){
       if(prognosis[data.data[i].Prognosis]!==undefined){
@@ -494,6 +522,7 @@ export default class BullMedicationDetail extends Component {
           return error;
         }
       );
+      return response;
     var data_ = Object.entries(response);
     let new_data = [];
     for (let i = 0; i < data_.length; i++) {

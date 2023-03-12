@@ -21,6 +21,9 @@ export default class SellAnimalModal extends Modal {
   animalType = 'Cow';
   constructor(props) {
     super(props);
+    if(props.animalType){
+      this.animalType = props.animalType
+    }
     this.state = {
       imageUrl: imageUrl,
       doctorMultipleSelection: false,
@@ -33,7 +36,7 @@ export default class SellAnimalModal extends Modal {
       animalName:'',
       animalTagNo:'',
       taskType:'Add',
-      animal_type:'Cow'
+      animal_type:this.animalType
       /*countries:{},
       states:{},
       districts:{}*/
@@ -45,13 +48,13 @@ export default class SellAnimalModal extends Modal {
     this.sellCowValidation = yup.object().shape({
       Id:yup.number().when([],()=>{
         if(this.state.taskType==='Edit'){
-          return yup.number().typeError("Invalid Record Selected").required("Please select the Cow Sell Record again")
+          return yup.number().typeError("Invalid Record Selected").required(`Please select the ${this.animalType} Sell Record again`)
         }
       }),//typeError("Invalid animal Service ID"),
       AnimalId: yup
         .number()
         .typeError("Invalid Animal Selected")
-        .required("Please Select the Cow"),
+        .required(`Please Select the ${this.animalType}`),
       Price: yup
         .number()
         .typeError("Invalid Price Entered")
@@ -161,12 +164,12 @@ export default class SellAnimalModal extends Modal {
       onSubmit: async (formValues, { setSubmitting, setFieldError,resetForm}) => {
         //console.log("Add Cow Service");
         var formData = new FormData();
-        //if(formValues.animalID && formValues.animalID===this.context.selectedCow.id)
+        //if(formValues.animalID && formValues.animalID===this.props.animalProfile.context.selectedCow.id)
         //let fields = ['Id','AnimalId','Price','BuyerSellerId','Date','SupervisorId','SupervisorName',
         //'AnimalNo','Name','Country','State','District','VillMohalla','StreetNo','HouseNo','PIN','PhoneNumber',
         //'Email'];
         var data_ = {
-          AnimalId: this.context.selectedCow.id,
+          AnimalId: this.props.animalProfile.context.getSelectedAnimalID(),
           Price: formValues.Price,
           BuyerSellerId: formValues.BuyerSellerId,
           Date: convertDate(formValues.Date),
@@ -197,7 +200,7 @@ export default class SellAnimalModal extends Modal {
         if(this.state.taskType==='Edit'){
           api_type="Edit"
         }
-        this.templateManager.showLoading(`Selling Cow`);
+        this.templateManager.showLoading(`Selling ${this.animalType}`);
         const requestOptions = {
           method: "POST",
           /*headers: {
@@ -206,7 +209,7 @@ export default class SellAnimalModal extends Modal {
           body: formData,
         };
         let data = await fetch(
-          `${apiUrl}Cows/${api_type}SellCow/`,
+          `${apiUrl}${this.props.sellApi[1]}/${api_type}${this.props.sellApi[2]}/`,
           requestOptions
         )
           .then((res) => res.json())
@@ -221,11 +224,12 @@ export default class SellAnimalModal extends Modal {
         this.templateManager.hideLoading();
         console.log(data);
         if (data.data.status === "success") {
-          this.props.animalProfile.cowEditForm.setSellCow(true);
+          this.props.animalProfile.setSellAnimal(true);
+          //this.props.animalProfile.cowEditForm.setSellCow(true);
           this.templateManager.showSuccessMessage(data.data.message);
           this.resetSellForm();
           this.hide();
-          this.props.animalProfile.cowServiceDetail.table.loadData();
+          //this.props.animalProfile.cowServiceDetail.table.loadData();
           await this.setState({taskType: 'Add'},()=>{this.setModalState('Add')});
         } else {
           if (data.errors) {
@@ -316,12 +320,10 @@ export default class SellAnimalModal extends Modal {
   showErrors = (errors) => {
     console.log(errors);
   };
-  updateSelectedCow(){  //required 
-    //console.log(this.formRef.current);
-    //debugger;
-    this.formRef.current.setFieldValue('AnimalId',this.context.selectedCow.id);
-    //this.formRef.current.setFieldValue('cowID',this.context.selectedCow.id);
-    this.formRef.current.setFieldValue('cowName',`${this.context.selectedCow.name}-${this.context.selectedCow.tagNo}`);
+  updateSelectedAnimal(){  //required 
+    this.formRef.current.setFieldValue('AnimalId',this.props.animalProfile.context.getSelectedAnimalID());
+    //this.formRef.current.setFieldValue('cowID',this.props.animalProfile.context.selectedCow.id);
+    this.formRef.current.setFieldValue('animalName',`${this.props.animalProfile.context.getSelectedAnimalName()}-${this.props.animalProfile.context.getSelectedAnimalTagNo()}`);
   }
   render() {
     return (
@@ -340,7 +342,7 @@ export default class SellAnimalModal extends Modal {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  Sell Cow
+                  Sell {this.animalType}
                 </h5>
                 <button
                   type="button"
@@ -368,14 +370,14 @@ export default class SellAnimalModal extends Modal {
                     <Form id="cow_service_form" onSubmit={handleSubmit}>
                       <div className="row">
                         <div className="col-md-12">
-                          <div className="title">Sell Cow</div>
+                          <div className="title">Sell {this.animalType}</div>
                           {/*this.showErrors(errors)*/}
                           <table className="table">
                             <thead>
                               <tr>
                                 <th colSpan="2">
                                   <div id="cs_table_title">
-                                    Fill the Sell Cow Form
+                                    Fill the Sell {this.animalType} Form
                                   </div>
                                   <span
                                     className="fa fa-save addCowConceiveBtn"
@@ -396,12 +398,12 @@ export default class SellAnimalModal extends Modal {
                             </thead>
                             <tbody>
                               
-                              <TableFormField as="empty" name="AnimalId" label="Cow No" content={<span id="cow_service_cow_dam_tag_no">{values.animalName}</span>}
+                              <TableFormField as="empty" name="AnimalId" label={`${this.animalType} No`} content={<span id="cow_service_cow_dam_tag_no">{values.animalName}</span>}
                                 error_after={<ErrorMessage name="animalID" component={TextError} />} />
-                              <TableFormField as="date" id="Date" name="Date" label={`Date of Selling${values.Date}`} value={values.Date} 
+                              <TableFormField as="date" id="Date" name="Date" label={`Date of Selling`} value={values.Date} 
                                   afterContent={<><input
                                     type="hidden"
-                                    value={this.context.getSelectedAnimalID()}
+                                    value={this.props.animalProfile.context.getSelectedAnimalID()}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     name="animalID"
@@ -411,8 +413,7 @@ export default class SellAnimalModal extends Modal {
                                 ref={(ref)=>{this.DateElement = ref;}}
                                 setFieldValue={setFieldValue} error_after={<ErrorMessage name="id" component={TextError}/>}
                               />
-                              
-                              <TableFormField as="input" id="Price" name="Price" label="Cow Price"/>
+                              <TableFormField as="input" id="Price" name="Price" label={`${this.animalType} Price`}/>
                               <TableFormField as="empty" id="Price" name="Price" label="Select Super visor (selling person)" 
                                 content={<><span id="">
                                     {values.SupervisorName}
@@ -435,41 +436,41 @@ export default class SellAnimalModal extends Modal {
                               <ErrorBoundary>
                                 
                               <TableFormField as="select" id="Country" name="Country" label="Select Country"
-                                options={this.context.countries} 
+                                options={this.props.animalProfile.context.countries} 
                                 setFieldValue={setFieldValue}
                                 ajax={false}
                                 onChange={this.getSetStates}
                                 ref={(ref)=>{this.countryField = ref;}} 
                                 placeholder="Select Country"
                                 value={values.Country}
-                                /*ajaxSource={this.loadDiseases2}*/
+                               
                               />
                               </ErrorBoundary>
                               <TableFormField as="select" id="cow_service_cow_delivery_status" name="State" label="Select State"
-                                options={this.context.states} 
+                                options={this.props.animalProfile.context.states} 
                                 setFieldValue={setFieldValue}
                                 ajax={false}
                                 onChange={this.getSetDistricts}
                                 ref={(ref)=>{this.stateField = ref;}} 
                                 placeholder="Select State"
-                                /*ajaxSource={this.loadDiseases2}*/
+                               
                               />
                               <TableFormField as="select" id="District" name="District" label="Select District"
-                                options={this.context.districts}
+                                options={this.props.animalProfile.context.districts}
                                 setFieldValue={setFieldValue}
                                 ajax={false}
                                 onChange={this.getSetTehsils}
                                 ref={(ref)=>{this.districtField = ref;}} 
                                 placeholder="Select District"
-                                /*ajaxSource={this.loadDiseases2}*/
+                                
                               />
                               <TableFormField as="select" id="Tehsil" name="Tehsil" label="Select Tehsil"
-                                options={this.context.tehsils}
+                                options={this.props.animalProfile.context.tehsils}
                                 setFieldValue={setFieldValue}
                                 ajax={false}
                                 ref={(ref)=>{this.tehsilField = ref;}} 
                                 placeholder="Select Tehsil"
-                                /*ajaxSource={this.loadDiseases2}*/
+                                
                               />
                               <TableFormField as="input" id="VillMohalla" name="VillMohalla" label="Village/Mohalla"/>
                               <TableFormField as="input" id="StreetNo" name="StreetNo" label="Street Number"/>
@@ -508,11 +509,11 @@ export default class SellAnimalModal extends Modal {
   }
    
   resetSellForm =async()=>{
-    let fields = ['Id','Price','BuyerSellerId','Date','SupervisorId','SupervisorName','AnimalNo','Name','Country','State','Distric','VillMohalla','StreetNo','HouseNo','PIN','PhoneNumber','Email']; //getlocation
+    let fields = ['Id','Price','BuyerSellerId','Date','SupervisorId','SupervisorName','AnimalNo','Name','Country','State','District','Tehsil','VillMohalla','StreetNo','HouseNo','PIN','PhoneNumber','Email']; //getlocation
     fields.map((value,index)=>{
       this.formRef.current.setFieldValue(value,'');
     });
-    this.updateSelectedCow();
+    this.updateSelectedAnimal();
     await this.setState({taskType: 'Add'},()=>{this.setModalState('Add');});
   }
   
@@ -536,17 +537,19 @@ export default class SellAnimalModal extends Modal {
       $('#addServiceDetailModal div.modal-header>h5.modal-title').html(`Add Sell Cow Detail`);
     }
   } 
-  getSellCowDetail=async ()=>{
-    let data = {cow_id:this.context.selectedCow.id};
-    
-    if(this.context.selectedCow.id!==null && this.context.selectedCow.id!==undefined){
-      let data1 = await axios.post(`${apiUrl}Cows/GetSellCowDetailByCowId?cow_id=${data.cow_id}`);
-      return await this.setSellCowDetail(data1);
+  getSellAnimalDetail=async ()=>{
+    console.log(`Get sell ${this.animalType}animal detail called`)
+    let data = {animal_id:this.props.animalProfile.context.getSelectedAnimalID()};
+    if(this.props.animalProfile.context.getSelectedAnimalID()!==null && this.props.animalProfile.context.getSelectedAnimalID()!==undefined){
+      //let data1 = await axios.post(`${apiUrl}Cows/GetSellCowDetailByCowId?cow_id=${data.cow_id}`);
+      //let data1 = await axios.post(`${apiUrl}Bulls/GetSellBullDetailByBullId?bull_id=${data.bull_id}`);
+      let data1 = await axios.post(`${apiUrl}${this.props.getSellDetailApi}${data.animal_id}`);
+      return await this.setSellAnimalDetail(data1);
     }else{
       return false;
     }
   }
-  setSellCowDetail=(data)=>{
+  setSellAnimalDetail=(data)=>{
     if(data.data.status==='success'){
       this.setState({taskType:'Edit'});
       this.setModalState('Edit');

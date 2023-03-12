@@ -503,7 +503,7 @@ export default class AddBullServiceModal extends Modal {
     return names.join(",");
   };
   showErrors = (errors) => {
-    console.log(errors);
+    //console.log(errors);
   };
   handleOnDateOfServiceChagne = (date,setFieldValue) => {
     setFieldValue('dateOfService',date)
@@ -564,7 +564,9 @@ export default class AddBullServiceModal extends Modal {
                       <div className="row">
                         <div className="col-md-12">
                           <div className="title">Service Information</div>
-                          {this.showErrors(errors)}
+                          {
+                            //this.showErrors(errors)
+                          }
                           <table className="table">
                             <thead>
                               <tr>

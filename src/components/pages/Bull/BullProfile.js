@@ -11,14 +11,12 @@ import SelectUserModal from "../User/SelectUserModal";
 import BullProfileNewFormModal from "./BullProfileNewFormModal";
 import BullServiceDetail from "./BullServiceDetail";
 import BullProgenyDetail from "./BullProgenyDetail";
-import BullMedicationDetail from "./BullMedicationDetail";
+//import BullMedicationDetail from "./BullMedicationDetail";
 import BullSummary from "./BullSummary";
 import AddBullServiceModal from "./AddBullServiceModal";
-import SellBullModal from "./SellBullModal";
-/*
 
-import BullComparisonChart from "./BullComparisonChart";
-*/
+import AnimalMedicationDetail from "../Medication/AnimalMedicationDetail";
+import SellAnimalModal from "../SellAnimal/SellAnimalModal";
 
 export default class BullProfile extends Component {
   static contextType = BullContext;
@@ -35,9 +33,10 @@ export default class BullProfile extends Component {
     this.bullServiceDetail.table.loadData();
     this.bullProgenyDetail.table.loadData();
     this.addBullServiceModal.setBullData();
-    this.medicationDetail.updateSelectedBull();
+    this.medicationDetail.updateSelectedAnimal();
     this.medicationDetail.table.loadData();
-    this.sellBullModal.updateSelectedBull();
+    //this.sellBullModal.updateSelectedBull();
+    this.sellBullModal.updateSelectedAnimal();
     //this.bullCalvingDetail.table.loadData();
     //this.milkingChart.table.loadData();
     //this.milkingChart.tableMilkStartStopDetail.loadData();
@@ -94,18 +93,9 @@ export default class BullProfile extends Component {
                     this.bullProgenyDetail = ref;
                   }} bullProfile={this}
                 />
-                <BullMedicationDetail bullProfile={this} ref={(ref)=>{this.medicationDetail = ref;}} templateManager={data.templateManager}/>
+                {/*<BullMedicationDetail bullProfile={this} ref={(ref)=>{this.medicationDetail = ref;}} templateManager={data.templateManager}/>*/}
+                <AnimalMedicationDetail animalProfile={this} ref={(ref)=>{this.medicationDetail = ref;}} templateManager={data.templateManager} animalType={'Bull'}/>
                 <BullSummary ref={(ref) => { this.bullSummary = ref; }} />
-                {/*<BullCalvingDetail
-                  ref={(ref) => {
-                    this.bullCalvingDetail = ref;
-                  }} bullProfile={this} 
-                />
-                
-                <BullComparisonChart/>
-                {/*
-            <BullSummary/>
-            */}
                 <div className="row">
                   <br />
                   <br />
@@ -148,11 +138,20 @@ export default class BullProfile extends Component {
                 }}
                 bullProfile={this}
               />
-              <SellBullModal
+              <SellAnimalModal
                 ref={(ref)=>{this.sellBullModal = ref;}} 
-                bullProfile={this}
+                animalProfile={this}
                 templateManager={data.templateManager}
+                sellApi={{1:'Bulls',2:'SellBull'}}
+                getSellDetailApi= {'Bulls/GetSellBullDetailByBullId?bull_id='}
+                animalType ='Bull'
                 />
+              {/*<SellAnimalModal
+                ref={(ref)=>{this.sellAnimalModal = ref;}} 
+                animalProfile={this}
+                templateManager={data.templateManager}
+                animalType={'Bull'}
+              />*/}
             </>
           );
         }}
@@ -162,5 +161,8 @@ export default class BullProfile extends Component {
   showNewBullModal = () => {
     this.bullNewModal.show();
   };
+  setSellAnimal=(status)=>{
+    this.bullEditForm.setSellBull(status);
+  }
 }
 BullProfile.contextType = BullContext;

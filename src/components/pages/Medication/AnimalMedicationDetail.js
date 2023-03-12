@@ -5,14 +5,14 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import TextError from "../Templates/TextError";
 import Select, { components } from "react-select";
 import { convertDate, apiUrl } from "../../../context/AppContext";
-import CowContext from "../../../context/CowContext";
 import $ from "jquery";
 import Table from "../../Table";
 import FormField from "../Templates/FormField";
 import axios from "axios";
 
+
 export default class AnimalMedicationDetail extends Component {
-  static contextType = CowContext;
+  /*static contextType = BullContext;*/
   animalType = 'Cow';
   constructor(props) {
     super(props);
@@ -25,6 +25,7 @@ export default class AnimalMedicationDetail extends Component {
     if(props.animalType){
       this.animalType = props.animalType;
     }
+    
     /*this.propnosis_options = [
       { value: 1, label: "Poor" },
       { value: 2, label: "Good" },
@@ -114,7 +115,7 @@ export default class AnimalMedicationDetail extends Component {
         var data_ = {
           Id:formValues.Id,
           Date: convertDate(formValues.Date),
-          AnimalID: this.context.selectedCow.id,
+          AnimalID: this.props.animalProfile.context.getSelectedAnimalID(),
           //Disease: formValues.Disease,
           DiseaseID: formValues.DiseaseID.value,
           Symptoms: formValues.Symptoms,
@@ -322,7 +323,7 @@ export default class AnimalMedicationDetail extends Component {
     }
     this.formRef.current.setFieldValue("doctors",{});
     this.props.animalProfile.selectUserModal.clearDoctorSelection(); //reset doctors in usermodal
-    this.updateSelectedCow();
+    this.updateSelectedAnimal();
   };
   selectDoctor = async () => {
     await this.props.animalProfile.selectUserModal.setMultipleSelection(
@@ -386,11 +387,10 @@ export default class AnimalMedicationDetail extends Component {
     });
     return names.join(",");
   };
-  updateSelectedCow(){  //required 
-
-    this.formRef.current.setFieldValue('AnimalID',this.context.selectedCow.id);
-    this.formRef.current.setFieldValue('AnimalNo',`${this.context.selectedCow.tagNo}`);
-    this.formRef.current.setFieldValue('AnimalName',`${this.context.selectedCow.name}`);
+  updateSelectedAnimal(){  //required 
+    this.formRef.current.setFieldValue('AnimalID',this.props.animalProfile.context.getSelectedAnimalID());
+    this.formRef.current.setFieldValue('AnimalNo',`${this.props.animalProfile.context.getSelectedAnimalTagNo()}`);
+    this.formRef.current.setFieldValue('AnimalName',`${this.props.animalProfile.context.getSelectedAnimalName()}`);
   }
   action = async (length,start,page) => {
     const requestOptions = {
@@ -400,7 +400,7 @@ export default class AnimalMedicationDetail extends Component {
     /*let page = Math.ceil((start-1)/length)+1; //10 20 30
     console.log(page,start);*/
     let data = await fetch(
-      `${apiUrl}Medication/GetMedicationDetailByAnimalId?id=${this.context.selectedCow.id}&start=${page}&length=${length}`,
+      `${apiUrl}Medication/GetMedicationDetailByAnimalId?id=${this.props.animalProfile.context.getSelectedAnimalID()}&start=${page}&length=${length}`,
       requestOptions
     )
       .then((res) => res.json())
@@ -557,16 +557,7 @@ export default class AnimalMedicationDetail extends Component {
         }
       );
     return response;
-    var data_ = Object.entries(response);
-    let new_data = [];
-    for (let i = 0; i < data_.length; i++) {
-      new_data.push({
-        value: data_[i][0],
-        label: data_[i][1],
-      });
-    }
-    return new_data;
-    //this.setState({ diseaseOptions: new_data });
+    
   }
   getSetDiseases=async (val)=>{
     //console.log("GEt Set Disease");
